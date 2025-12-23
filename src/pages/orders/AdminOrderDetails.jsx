@@ -74,7 +74,7 @@ const handlePrint = () => {
 
         <div class="footer">
           Thank you for shopping with Gurmeet Kaur Store<br/>
-          support@gurmeetkaurstore.com
+          gurmeetkaurstore@gmail.com
         </div>
 
         <script>
