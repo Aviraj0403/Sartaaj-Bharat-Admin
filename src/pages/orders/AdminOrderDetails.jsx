@@ -15,71 +15,155 @@ const handlePrint = () => {
       <head>
         <meta charset="UTF-8" />
         <style>
-          body { font-family: "Segoe UI", Arial, sans-serif; padding:22px; color:#222; }
-          .header { display:flex; align-items:center; gap:16px; border-bottom:2px dashed #f97316; padding-bottom:10px; margin-bottom:14px; }
-          .header img { width:85px; }
-          .header h1 { margin:0; font-size:22px; color:#f97316; }
-          .header p { margin:0; font-size:12px; color:#555; }
-          .box { border:1px solid #ddd; padding:8px 10px; margin-bottom:10px; }
-          .box-title { font-size:13px; font-weight:700; margin-bottom:6px; }
-          .grid { display:grid; grid-template-columns:1fr 1fr; gap:4px 14px; font-size:12.5px; line-height:1.4; }
-          .grid p { margin:0; }
-          .grid p span { font-weight:700; } /* make labels bold */
-          table { width:100%; border-collapse:collapse; margin-top:10px; font-size:12.5px; }
-          table th, table td { border:1px solid #ddd; padding:6px; }
-          table th { background:#fff3e8; font-weight:700; }
-          .footer { margin-top:24px; border-top:1px dashed #ccc; padding-top:8px; text-align:center; font-size:11.5px; color:#666; }
+          body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            padding: 22px;
+            color: #222;
+          }
+
+          .header {
+            text-align: center;
+            border-bottom: 2px dashed #f97316;
+            padding-bottom: 10px;
+            margin-bottom: 14px;
+          }
+
+          .header img { width: 85px; display:block; margin: 0 auto 8px; }
+          .header h1 { margin: 0; font-size: 22px; color: #f97316; font-weight: 800; }
+          .header p { margin: 0; font-size: 12px; color: #555; font-weight: 700; }
+
+          .box {
+            border: 1px solid #ddd;
+            padding: 8px 10px;
+            margin-bottom: 10px;
+          }
+
+          .box-title {
+            font-size: 13px;
+            font-weight: 800;
+            margin-bottom: 6px;
+          }
+
+          .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px 14px;
+            font-size: 12.5px;
+            line-height: 1.4;
+          }
+
+          .grid p { margin:0; font-weight: 700; } /* everything bold */
+
+          table {
+            width:100%;
+            border-collapse:collapse;
+            margin-top:10px;
+            font-size:12.5px;
+            font-weight:700; /* make table bold */
+          }
+
+          table th, table td {
+            border:1px solid #ddd;
+            padding:6px;
+            font-weight:700;
+          }
+
+          table th { background:#fff3e8; }
+
+          .total-box {
+            border:1px solid #ddd;
+            padding:8px 10px;
+            font-size:13px;
+            font-weight:800;
+            margin-top:10px;
+            text-align:right;
+          }
+
+          .warning {
+            margin-top:16px;
+            padding:8px;
+            background:#fde2e7;
+            color:#b91c1c;
+            text-align:center;
+            font-weight:800;
+            font-size:12.5px;
+            letter-spacing:1px;
+            border:1px dashed #f43f5e;
+            border-radius:6px;
+          }
+
+          .footer {
+            position: fixed;
+            bottom: 10px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 800; /* bold footer */
+            color: #444;
+            line-height: 1.5;
+          }
+
           button { display:none !important; }
-          .total-box { border:1px solid #ddd; padding:8px 10px; font-size:13px; font-weight:700; margin-top:10px; text-align:right; }
         </style>
       </head>
+
       <body>
+        <!-- HEADER -->
         <div class="header">
           <img id="logo" src="https://gurmeetkaurstore.com/logo-cosmetic2.jpg" />
-          <div>
-            <h1>Gurmeet Kaur Store</h1>
-            <p>Order Receipt / Tax Invoice</p>
-          </div>
+          <h1>Gurmeet Kaur Store</h1>
+          <p>Order Receipt / Tax Invoice</p>
         </div>
 
+        <!-- ORDER DETAILS -->
         <div class="box">
           <div class="box-title">Order Details</div>
           <div class="grid">
-            <p><span>Order ID:</span> ${order._id}</p>
-            <p><span>Status:</span> ${order.orderStatus}</p>
-            <p><span>Date:</span> ${new Date(order.createdAt).toLocaleString()}</p>
-            <p><span>Payment:</span> ${order.paymentMethod}</p>
-            <p><span>Payment Status:</span> ${order.paymentStatus}</p>
+            <p>Order ID: ${order._id}</p>
+            <p>Status: ${order.orderStatus}</p>
+            <p>Date: ${new Date(order.createdAt).toLocaleString()}</p>
+            <p>Payment: ${order.paymentMethod}</p>
+            <p>Payment Status: ${order.paymentStatus}</p>
           </div>
         </div>
 
+        <!-- SHIPPING -->
         <div class="box">
           <div class="box-title">Shipping Information</div>
           <div class="grid">
-            <p><span>Name:</span> ${order.shippingAddress?.name || ""}</p>
-            <p><span>Phone:</span> ${order.shippingAddress?.phoneNumber || ""}</p>
-            <p><span>Street:</span> ${order.shippingAddress?.street || ""}</p>
-            <p><span>City/State:</span> ${order.shippingAddress?.city || ""}, ${order.shippingAddress?.state || ""} - ${order.shippingAddress?.postalCode || ""}</p>
-            <p><span>Country:</span> ${order.shippingAddress?.country || ""}</p>
-            <p><span>Email:</span> ${order.user?.email || ""}</p>
+            <p>Name: ${order.shippingAddress?.name || ""}</p>
+            <p>Phone: ${order.shippingAddress?.phoneNumber || ""}</p>
+            <p>Street: ${order.shippingAddress?.street || ""}</p>
+            <p>City/State: ${order.shippingAddress?.city || ""}, ${order.shippingAddress?.state || ""} - ${order.shippingAddress?.postalCode || ""}</p>
+            <p>Country: ${order.shippingAddress?.country || ""}</p>
+            <p>Email: ${order.user?.email || ""}</p>
           </div>
         </div>
 
+        <!-- ITEMS -->
         ${tableHTML}
 
+        <!-- TOTAL -->
         <div class="total-box">
           Total Amount: ₹${finalAmount.toFixed(2)}
           ${order.discountAmount > 0 ? `(Saved ₹${order.discountAmount.toFixed(2)})` : ""}
         </div>
 
+        <!-- WARNING -->
+        <div class="warning">
+          ⚠ FRAGILE GLASS HANDLE WITH CARE ⚠
+        </div>
+
+        <!-- FOOTER -->
         <div class="footer">
-          Thank you for shopping with Gurmeet Kaur Store<br/>
-          gurmeetkaurstore@gmail.com
+          11021, 5A Block WEA, Sat Nagar, Karol Bagh, Delhi – 110005 <br/>
+          📞 +91 9999398494 &nbsp; | &nbsp; ✉ gurmeetkaurstore@gmail.com
         </div>
 
         <script>
           const logo = document.getElementById("logo");
-          logo.onload = function() { window.print(); window.close(); };
+          logo.onload = function () { window.print(); window.close(); };
         </script>
       </body>
     </html>
@@ -87,6 +171,8 @@ const handlePrint = () => {
 
   printWindow.document.close();
 };
+
+
 
 
   if (loading) {
