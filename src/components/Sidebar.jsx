@@ -84,6 +84,7 @@ function Sidebar({ className, toggleSidebar }) {
   onClick={toggleSidebar}
 />
           <NavItem to="PaymentDetails" label="Payment Detail" icon={<FaChartBar size={20} />} onClick={toggleSidebar} />
+          <NavItem to="orphaned-payments" label="Missing Order Payments" icon={<FaChartBar size={20} />} onClick={toggleSidebar} />
         </NavSection>
 
         {/* Logout */}

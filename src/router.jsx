@@ -21,6 +21,7 @@ import PaymentList from "./pages/payments/PaymentList";
 import EditProduct from "./pages/Product/EditProduct";
 import ProductView from "./pages/Product/ProductView";
 import AdminStockManager from "./pages/stocks/AdminStockManager";
+import OrphanedPayments from "./pages/payments/OrphanedPayments";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -98,6 +99,10 @@ const router = createBrowserRouter([
       { path: "orders", element: <AdminOrderManager /> },
       {path: "stocks", element: < AdminStockManager/> },
       { path: "PaymentDetails", element: <PaymentList />, },
+      {
+        path : "orphaned-payments",
+        element : <OrphanedPayments />
+      }
     ],
   },
   {
