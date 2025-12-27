@@ -20,6 +20,7 @@ import AdminOrderManager from "./pages/orders/AdminOrderManager"
 import PaymentList from "./pages/payments/PaymentList";
 import EditProduct from "./pages/Product/EditProduct";
 import ProductView from "./pages/Product/ProductView";
+import AdminStockManager from "./pages/stocks/AdminStockManager";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -95,6 +96,7 @@ const router = createBrowserRouter([
         element: <SalesReport />, // redirect /admin to /admin/dashboard
       },
       { path: "orders", element: <AdminOrderManager /> },
+      {path: "stocks", element: < AdminStockManager/> },
       { path: "PaymentDetails", element: <PaymentList />, },
     ],
   },

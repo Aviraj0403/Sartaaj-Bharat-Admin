@@ -11,7 +11,7 @@ import {
 import { MdDashboard, MdCategory } from "react-icons/md";
 import { IoMdLogOut } from "react-icons/io";
 import { useAuth } from "../context/AuthContext.jsx";
-
+import { FaBoxesStacked } from 'react-icons/fa6';
 function Sidebar({ className, toggleSidebar }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -77,6 +77,12 @@ function Sidebar({ className, toggleSidebar }) {
 
         <NavSection title="Reports">
           <NavItem to="sales-report" label="Sales Report" icon={<FaChartBar size={20} />} onClick={toggleSidebar} />
+         <NavItem
+  to="stocks"
+  label="Stock Manager"
+  icon={<FaBoxesStacked size={20} />}
+  onClick={toggleSidebar}
+/>
           <NavItem to="PaymentDetails" label="Payment Detail" icon={<FaChartBar size={20} />} onClick={toggleSidebar} />
         </NavSection>
 
