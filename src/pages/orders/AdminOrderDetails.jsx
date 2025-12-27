@@ -5,7 +5,8 @@ const AdminOrderDetails = ({ order, onClose, loading }) => {
   const receiptRef = useRef();
 
 const handlePrint = () => {
-  const tableHTML = receiptRef.current.querySelector("table")?.outerHTML || "";
+  const tableHTML =
+    receiptRef.current.querySelector("table")?.outerHTML || "";
   const finalAmount = order.totalAmount - (order.discountAmount || 0);
 
   const printWindow = window.open("", "_blank", "width=900,height=650");
@@ -15,96 +16,144 @@ const handlePrint = () => {
       <head>
         <meta charset="UTF-8" />
         <style>
-          body {
-            font-family: "Segoe UI", Arial, sans-serif;
-            padding: 22px;
-            color: #222;
+
+          /* REMOVE DEFAULT PRINT MARGIN */
+          @page {
+            margin: 0;
           }
 
+          body {
+            margin: 0;
+            padding: 16px 22px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: #222;
+            font-size: 18px;
+          }
+
+          /* HEADER */
           .header {
-            text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 14px;
             border-bottom: 2px dashed #f97316;
             padding-bottom: 10px;
             margin-bottom: 14px;
           }
 
-          .header img { width: 85px; display:block; margin: 0 auto 8px; }
-          .header h1 { margin: 0; font-size: 22px; color: #f97316; font-weight: 800; }
-          .header p { margin: 0; font-size: 12px; color: #555; font-weight: 700; }
+          .header img {
+            width: 70px;
+            height: auto;
+          }
+            .header-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* vertical center */
+  align-items: flex-start; /* left aligned text */
+}
 
+
+          .header-text h1 {
+            margin: 0;
+            font-size: 20px;
+            color: #f97316;
+            font-weight: 800;
+          }
+
+          .header-text p {
+            margin: 2px 0 0;
+            font-size: 18px;
+            color: #555;
+            font-weight: 700;
+          }
+
+          /* BOX */
           .box {
             border: 1px solid #ddd;
-            padding: 8px 10px;
-            margin-bottom: 10px;
+            padding: 10px;
+            margin-bottom: 12px;
           }
 
           .box-title {
-            font-size: 13px;
+            font-size: 18px;
             font-weight: 800;
             margin-bottom: 6px;
           }
 
+          /* GRID */
           .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 4px 14px;
-            font-size: 12.5px;
-            line-height: 1.4;
+            gap: 6px 14px;
+            font-size: 18px;
+            line-height: 1.5;
           }
 
-          .grid p { margin:0; font-weight: 700; } /* everything bold */
+          .grid p {
+            margin: 0;
+            font-weight: 700;
+          }
 
+          /* TABLE */
           table {
-            width:100%;
-            border-collapse:collapse;
-            margin-top:10px;
-            font-size:12.5px;
-            font-weight:700; /* make table bold */
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 18px;
+            font-weight: 700;
           }
 
-          table th, table td {
-            border:1px solid #ddd;
-            padding:6px;
-            font-weight:700;
+          table th,
+          table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            font-size: 18px;
           }
 
-          table th { background:#fff3e8; }
+          table th {
+            background: #fff3e8;
+          }
 
+          /* TOTAL */
           .total-box {
-            border:1px solid #ddd;
-            padding:8px 10px;
-            font-size:13px;
-            font-weight:800;
-            margin-top:10px;
-            text-align:right;
+            border: 1px solid #ddd;
+            padding: 10px;
+            font-size: 20px;
+            font-weight: 800;
+            margin-top: 12px;
+            text-align: right;
           }
 
+          /* WARNING */
           .warning {
-            margin-top:16px;
-            padding:8px;
-            background:#fde2e7;
-            color:#b91c1c;
-            text-align:center;
-            font-weight:800;
-            font-size:12.5px;
-            letter-spacing:1px;
-            border:1px dashed #f43f5e;
-            border-radius:6px;
+            margin-top: 16px;
+            padding: 10px;
+            background: #fde2e7;
+            color: #b91c1c;
+            text-align: center;
+            font-weight: 800;
+            font-size: 20px;
+            letter-spacing: 1px;
+            border: 1px dashed #f43f5e;
+            border-radius: 6px;
           }
 
+          /* FOOTER */
           .footer {
             position: fixed;
             bottom: 10px;
             left: 0;
             width: 100%;
             text-align: center;
-            font-size: 12px;
-            font-weight: 800; /* bold footer */
+            font-size: 16px;
+            font-weight: 800;
             color: #444;
             line-height: 1.5;
           }
 
-          button { display:none !important; }
+          button {
+            display: none !important;
+          }
+
         </style>
       </head>
 
@@ -112,8 +161,10 @@ const handlePrint = () => {
         <!-- HEADER -->
         <div class="header">
           <img id="logo" src="https://gurmeetkaurstore.com/logo-cosmetic2.jpg" />
-          <h1>Gurmeet Kaur Store</h1>
-          <p>Order Receipt / Tax Invoice</p>
+          <div class="header-text">
+            <h1>Gurmeet Kaur Store</h1>
+            <p>Order Receipt / Tax Invoice</p>
+          </div>
         </div>
 
         <!-- ORDER DETAILS -->
@@ -163,7 +214,10 @@ const handlePrint = () => {
 
         <script>
           const logo = document.getElementById("logo");
-          logo.onload = function () { window.print(); window.close(); };
+          logo.onload = function () {
+            window.print();
+            window.close();
+          };
         </script>
       </body>
     </html>
@@ -171,6 +225,7 @@ const handlePrint = () => {
 
   printWindow.document.close();
 };
+
 
 
 

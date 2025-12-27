@@ -340,6 +340,7 @@ const AdminOrderManager = () => {
                             />
                           </svg>
                         </button>
+                        {/*
                         <button
                           onClick={() => deleteOrder(order._id)}
                           className="text-red-600 hover:text-red-800 transition transform hover:scale-110"
@@ -348,6 +349,7 @@ const AdminOrderManager = () => {
                         >
                           <Trash2 size={18} />
                         </button>
+                        */}
                       </td>
                     </tr>
                   ))
@@ -454,6 +456,7 @@ const AdminOrderManager = () => {
                           />
                         </svg>
                       </button>
+                      {/*}
                       <button
                         onClick={() => deleteOrder(order._id)}
                         className="text-red-600 hover:text-red-800 transition transform hover:scale-110"
@@ -462,6 +465,7 @@ const AdminOrderManager = () => {
                       >
                         <Trash2 size={18} />
                       </button>
+                      */}
                     </div>
                   </div>
                 </div>
