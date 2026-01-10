@@ -27,7 +27,8 @@ const handlePrint = () => {
             padding: 16px 22px;
             font-family: "Segoe UI", Arial, sans-serif;
             color: #222;
-            font-size: 18px;
+            font-size: 18x;
+            font-weight: 800;
           }
 
           /* HEADER */
@@ -90,6 +91,7 @@ const handlePrint = () => {
 
           .grid p {
             margin: 0;
+            font-size: 20px;
             font-weight: 700;
           }
 
