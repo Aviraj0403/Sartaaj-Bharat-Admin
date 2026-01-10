@@ -184,7 +184,7 @@ const handlePrint = () => {
         <div class="box">
           <div class="box-title">Order Details</div>
           <div class="grid">
-            <p>Order ID: ${order._id}</p>
+            <p>Order ID: GUR-${order._id.slice(-5)}</p>
             <p>Status: ${order.orderStatus}</p>
             <p>Date: ${new Date(order.createdAt).toLocaleString()}</p>
             <p>Payment: ${order.paymentMethod}</p>
