@@ -168,8 +168,19 @@ const handlePrint = () => {
             <p>Order Receipt / Tax Invoice</p>
           </div>
         </div>
-
-        <!-- ORDER DETAILS -->
+        <!-- SHIPPING -->
+        <div class="box">
+          <div class="box-title">Shipping Information</div>
+          <div class="grid">
+            <p>Name: ${order.shippingAddress?.name || ""}</p>
+            <p>Phone: ${order.shippingAddress?.phoneNumber || ""}</p>
+            <p>Address: ${order.shippingAddress?.street || ""}</p>
+            <p>City/State: ${order.shippingAddress?.city || ""}, ${order.shippingAddress?.state || ""} - ${order.shippingAddress?.postalCode || ""}</p>
+            <p>Country: ${order.shippingAddress?.country || ""}</p>
+            <p>Email: ${order.user?.email || ""}</p>
+          </div>
+        </div>
+          <!-- ORDER DETAILS -->
         <div class="box">
           <div class="box-title">Order Details</div>
           <div class="grid">
@@ -178,19 +189,6 @@ const handlePrint = () => {
             <p>Date: ${new Date(order.createdAt).toLocaleString()}</p>
             <p>Payment: ${order.paymentMethod}</p>
             <p>Payment Status: ${order.paymentStatus}</p>
-          </div>
-        </div>
-
-        <!-- SHIPPING -->
-        <div class="box">
-          <div class="box-title">Shipping Information</div>
-          <div class="grid">
-            <p>Name: ${order.shippingAddress?.name || ""}</p>
-            <p>Phone: ${order.shippingAddress?.phoneNumber || ""}</p>
-            <p>Street: ${order.shippingAddress?.street || ""}</p>
-            <p>City/State: ${order.shippingAddress?.city || ""}, ${order.shippingAddress?.state || ""} - ${order.shippingAddress?.postalCode || ""}</p>
-            <p>Country: ${order.shippingAddress?.country || ""}</p>
-            <p>Email: ${order.user?.email || ""}</p>
           </div>
         </div>
 
