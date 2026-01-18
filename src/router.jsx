@@ -23,6 +23,7 @@ import ProductView from "./pages/Product/ProductView";
 import AdminStockManager from "./pages/stocks/AdminStockManager";
 import OrphanedPayments from "./pages/payments/OrphanedPayments";
 import AdminOrderLeads from "./pages/Leads/AdminOrderLeads";
+import PromoBannerAdmin from "./pages/Banner/PromoBannerADmin";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -107,6 +108,10 @@ const router = createBrowserRouter([
       {
         path: "leads",
         element: <AdminOrderLeads />,
+      },
+      {
+        path: "banners",
+        element : <PromoBannerAdmin />
       }
     ],
   },
