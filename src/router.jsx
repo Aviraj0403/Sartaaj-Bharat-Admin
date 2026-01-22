@@ -23,7 +23,7 @@ import ProductView from "./pages/Product/ProductView";
 import AdminStockManager from "./pages/stocks/AdminStockManager";
 import OrphanedPayments from "./pages/payments/OrphanedPayments";
 import AdminOrderLeads from "./pages/Leads/AdminOrderLeads";
-import PromoBannerAdmin from "./pages/Banner/PromoBannerADmin";
+import PromoBannerAdmin from "./pages/Banner/PromoBannerAdmin";
 const router = createBrowserRouter([
   {
     path: "/",
