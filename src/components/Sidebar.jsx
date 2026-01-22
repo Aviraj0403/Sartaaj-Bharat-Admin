@@ -73,7 +73,7 @@ function Sidebar({ className, toggleSidebar }) {
 
         <NavSection title="Promotions">
           <NavItem to="offers" label="Offers & Deals" icon={<FaTags size={20} />} onClick={toggleSidebar} />
-          {/* <NavItem to="banners" label="Banners" icon={<FaTags size={20} />} onClick={toggleSidebar} /> */}
+          <NavItem to="banners" label="Banners" icon={<FaTags size={20} />} onClick={toggleSidebar} />
         </NavSection>
 
         <NavSection title="Reports">
