@@ -168,49 +168,7 @@ export default function Dashboard() {
       {/* Main Content Container */}
       <div className="relative z-10 p-4 sm:p-6 lg:p-8">
         {/* Premium Header Section */}
-        <div className="mb-8">
-          <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6">
-            {/* Left Header Content */}
-            <div className="flex-1">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-lg">
-                  <BarChart3 className="w-8 h-8 text-white" />
-                </div>
-              </div>
-              
-              {/* Status Indicators */}
-              <div className="flex flex-wrap items-center gap-4">
-                <div className="flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-sm font-medium text-gray-700">Live Data</span>
-                </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20">
-                  <RefreshCw className="w-4 h-4 text-blue-600" />
-                  <span className="text-sm text-gray-600">Updated: {new Date().toLocaleTimeString()}</span>
-                </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-100 to-teal-100 rounded-xl shadow-lg border border-emerald-200/50">
-                  <Sparkles className="w-4 h-4 text-emerald-600" />
-                  <span className="text-sm font-semibold text-emerald-700">Premium Analytics</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Header Actions */}
-            <div className="flex items-center gap-3">
-              <button className="p-3 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 group">
-                <Bell className="w-5 h-5 text-gray-600 group-hover:text-indigo-600 transition-colors" />
-              </button>
-              <button className="p-3 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 group">
-                <Settings className="w-5 h-5 text-gray-600 group-hover:text-indigo-600 transition-colors" />
-              </button>
-              <button className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 group">
-                <Download className="w-5 h-5 group-hover:animate-bounce" />
-                <span className="font-semibold">Export Report</span>
-                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-              </button>
-            </div>
-          </div>
-        </div>
+    
 
         {/* Enhanced KPI Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-12">
