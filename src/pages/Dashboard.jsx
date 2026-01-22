@@ -1,6 +1,10 @@
 import React ,{ useEffect, useState, useRef } from 'react';
 import { io } from 'socket.io-client';
-import { Printer, TrendingUp, Users, Package, DollarSign, Download, BarChart3 } from 'lucide-react';
+import { 
+  Printer, TrendingUp, Users, Package, DollarSign, Download, BarChart3, 
+  Activity, Zap, Star, Award, ArrowUpRight, Eye, RefreshCw, Calendar,
+  Filter, Settings, Bell, Search, Sparkles, Target, Globe
+} from 'lucide-react';
 import SalesChart from '../pages/report/SalesChart';
 import WeeklyStatsPieChart from '../pages/Graph/WeeklyStatsPieChart';
 import { getTodayOrders, getTotalRevenue, getTotalOrders, getWeeklyStats, getMonthlyStats, getTotalUsers ,getTotalProducts} from '../services/dashboartdApi'; // Import the necessary API functions
@@ -143,63 +147,116 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 p-4 sm:p-6 lg:p-8">
-      {/* Animated Background Elements */}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden">
+      {/* Premium Animated Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-600/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-pink-400/20 to-orange-600/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-indigo-400/10 to-cyan-600/10 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-500"></div>
+        {/* Primary gradient orbs */}
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-violet-400/30 via-purple-500/20 to-indigo-600/30 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-br from-cyan-400/30 via-blue-500/20 to-purple-600/30 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/3 left-1/3 w-80 h-80 bg-gradient-to-br from-pink-400/20 via-rose-500/15 to-orange-600/25 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-500"></div>
+        
+        {/* Secondary floating elements */}
+        <div className="absolute top-20 right-20 w-32 h-32 bg-gradient-to-br from-emerald-400/20 to-teal-600/20 rounded-full mix-blend-multiply filter blur-2xl animate-bounce"></div>
+        <div className="absolute bottom-20 left-20 w-24 h-24 bg-gradient-to-br from-amber-400/20 to-orange-600/20 rounded-full mix-blend-multiply filter blur-2xl animate-bounce delay-700"></div>
+        
+        {/* Geometric patterns */}
+        <div className="absolute top-1/4 right-1/4 w-2 h-2 bg-indigo-400/40 rounded-full animate-ping"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-1 h-1 bg-purple-400/40 rounded-full animate-ping delay-300"></div>
+        <div className="absolute top-3/4 right-1/3 w-1.5 h-1.5 bg-cyan-400/40 rounded-full animate-ping delay-700"></div>
       </div>
 
-      {/* Header Section */}
-      <div className="relative z-10 mb-8">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
-              Dashboard Overview
-            </h1>
-            <p className="text-gray-600 mt-2">Real-time business insights and analytics</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="px-4 py-2 bg-white/80 backdrop-blur-sm rounded-lg shadow-lg border border-white/20">
-              <span className="text-sm text-gray-600">Last updated: </span>
-              <span className="font-semibold text-gray-900">{new Date().toLocaleTimeString()}</span>
+      {/* Main Content Container */}
+      <div className="relative z-10 p-4 sm:p-6 lg:p-8">
+        {/* Premium Header Section */}
+        <div className="mb-8">
+          <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6">
+            {/* Left Header Content */}
+            <div className="flex-1">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-lg">
+                  <BarChart3 className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-4xl xl:text-5xl font-bold bg-gradient-to-r from-gray-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent">
+                    Executive Dashboard
+                  </h1>
+                  <p className="text-gray-600 text-lg mt-1">Real-time business intelligence & analytics</p>
+                </div>
+              </div>
+              
+              {/* Status Indicators */}
+              <div className="flex flex-wrap items-center gap-4">
+                <div className="flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm font-medium text-gray-700">Live Data</span>
+                </div>
+                <div className="flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20">
+                  <RefreshCw className="w-4 h-4 text-blue-600" />
+                  <span className="text-sm text-gray-600">Updated: {new Date().toLocaleTimeString()}</span>
+                </div>
+                <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-100 to-teal-100 rounded-xl shadow-lg border border-emerald-200/50">
+                  <Sparkles className="w-4 h-4 text-emerald-600" />
+                  <span className="text-sm font-semibold text-emerald-700">Premium Analytics</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Header Actions */}
+            <div className="flex items-center gap-3">
+              <button className="p-3 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 group">
+                <Bell className="w-5 h-5 text-gray-600 group-hover:text-indigo-600 transition-colors" />
+              </button>
+              <button className="p-3 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 group">
+                <Settings className="w-5 h-5 text-gray-600 group-hover:text-indigo-600 transition-colors" />
+              </button>
+              <button className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 group">
+                <Download className="w-5 h-5 group-hover:animate-bounce" />
+                <span className="font-semibold">Export Report</span>
+                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              </button>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Enhanced Overview Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 relative z-10">
-        <DashboardCard 
-          title="Total Revenue" 
-          value={`₹${totalRevenue.toLocaleString()}`} 
-          color="blue" 
-          icon={<DollarSign className="w-8 h-8" />}
-          trend="+12.5%"
-        />
-        <DashboardCard 
-          title="Today's Orders" 
-          value={orders.length} 
-          color="green" 
-          icon={<Package className="w-8 h-8" />}
-          trend="+8.2%"
-        />
-        <DashboardCard 
-          title="Products Available" 
-          value={totalProducts.toLocaleString()} 
-          color="purple" 
-          icon={<BarChart3 className="w-8 h-8" />}
-          trend="+5.1%"
-        />
-        <DashboardCard 
-          title="Customers Served" 
-          value={totalUsers.toLocaleString()} 
-          color="orange" 
-          icon={<Users className="w-8 h-8" />}
-          trend="+15.3%"
-        />
-      </div>
+        {/* Enhanced KPI Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-12">
+          <PremiumKPICard 
+            title="Total Revenue" 
+            value={`₹${totalRevenue.toLocaleString()}`} 
+            color="indigo" 
+            icon={<DollarSign className="w-8 h-8" />}
+            trend="+12.5%"
+            subtitle="vs last month"
+            sparkline={[65, 78, 66, 44, 56, 67, 75]}
+          />
+          <PremiumKPICard 
+            title="Today's Orders" 
+            value={orders.length} 
+            color="emerald" 
+            icon={<Package className="w-8 h-8" />}
+            trend="+8.2%"
+            subtitle="vs yesterday"
+            sparkline={[45, 52, 38, 24, 33, 26, 21]}
+          />
+          <PremiumKPICard 
+            title="Products Available" 
+            value={totalProducts.toLocaleString()} 
+            color="purple" 
+            icon={<BarChart3 className="w-8 h-8" />}
+            trend="+5.1%"
+            subtitle="inventory growth"
+            sparkline={[35, 41, 62, 42, 13, 18, 29]}
+          />
+          <PremiumKPICard 
+            title="Active Customers" 
+            value={totalUsers.toLocaleString()} 
+            color="rose" 
+            icon={<Users className="w-8 h-8" />}
+            trend="+15.3%"
+            subtitle="user engagement"
+            sparkline={[24, 13, 98, 39, 48, 38, 58]}
+          />
+        </div>
 
       {/* Today's Orders */}
    <section className="z-10 relative mt-8 sm:mt-12">
@@ -336,118 +393,219 @@ export default function Dashboard() {
 </section>
 
 
-      {/* Enhanced Charts Section */}
-      <section className="relative z-10 mb-12">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Analytics Dashboard</h2>
-            <p className="text-gray-600">Comprehensive business performance metrics</p>
-          </div>
-          <button className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
-            <Download className="w-5 h-5" />
-            Export Report
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-          <div className="group">
-            <WeeklyStatsPieChart statsData={weeklyStats} />
-          </div>
-          <div className="group">
-            <ModernLineChart statsData={weeklyStats} />
-          </div>
-        </div>
-      </section>
-
-
-
-      {/* Enhanced Sales Chart */}
-      <section className="relative z-10 mb-12">
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-8 hover:shadow-3xl transition-all duration-300">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+        {/* Premium Analytics Section */}
+        <section className="mb-12">
+          <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 gap-6">
             <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Sales Performance</h3>
-              <p className="text-gray-600">Monthly revenue trends and targets</p>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+                <Activity className="w-8 h-8 text-indigo-600" />
+                Advanced Analytics
+              </h2>
+              <p className="text-gray-600 text-lg">Comprehensive business performance insights</p>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-100 to-emerald-100 rounded-lg">
-              <TrendingUp className="w-5 h-5 text-green-600" />
-              <span className="text-green-700 font-semibold">+18.5% vs last month</span>
+            
+            {/* Analytics Controls */}
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20">
+                <Calendar className="w-4 h-4 text-gray-600" />
+                <select className="bg-transparent text-sm font-medium text-gray-700 border-none outline-none">
+                  <option>Last 7 days</option>
+                  <option>Last 30 days</option>
+                  <option>Last 90 days</option>
+                </select>
+              </div>
+              <button className="flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 group">
+                <Filter className="w-4 h-4 text-gray-600 group-hover:text-indigo-600 transition-colors" />
+                <span className="text-sm font-medium text-gray-700">Filters</span>
+              </button>
+              <button className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 group">
+                <Eye className="w-4 h-4 group-hover:animate-pulse" />
+                <span className="font-semibold">View Details</span>
+              </button>
             </div>
           </div>
-          <SalesChart />
-        </div>
-      </section>
+
+          {/* Charts Grid */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            <div className="group transform hover:scale-[1.02] transition-all duration-500">
+              <WeeklyStatsPieChart statsData={weeklyStats} />
+            </div>
+            <div className="group transform hover:scale-[1.02] transition-all duration-500">
+              <ModernLineChart statsData={weeklyStats} />
+            </div>
+          </div>
+        </section>
+
+        {/* Enhanced Sales Performance */}
+        <section className="mb-12">
+          <div className="bg-white/60 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/30 p-8 hover:shadow-3xl transition-all duration-500 group">
+            <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 gap-6">
+              <div className="flex items-center gap-4">
+                <div className="p-4 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300">
+                  <Target className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-3xl font-bold text-gray-900 mb-2">Sales Performance</h3>
+                  <p className="text-gray-600 text-lg">Monthly revenue trends and target analysis</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-100 to-emerald-100 rounded-xl shadow-lg border border-emerald-200/50">
+                  <TrendingUp className="w-5 h-5 text-emerald-600" />
+                  <span className="text-emerald-700 font-bold">+18.5% Growth</span>
+                </div>
+                <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-xl shadow-lg border border-blue-200/50">
+                  <Award className="w-5 h-5 text-blue-600" />
+                  <span className="text-blue-700 font-bold">Target Achieved</span>
+                </div>
+              </div>
+            </div>
+            <SalesChart />
+          </div>
+        </section>
+      </div>
     </div>
   );
 }
 
-const DashboardCard = ({ title, value, color, icon, trend }) => {
+// Premium KPI Card Component with Sparkline
+const PremiumKPICard = ({ title, value, color, icon, trend, subtitle, sparkline }) => {
   const colorMap = {
-    blue: {
-      gradient: 'bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700',
-      light: 'bg-blue-50',
-      accent: 'text-blue-600',
-      shadow: 'shadow-blue-500/25'
+    indigo: {
+      gradient: 'from-indigo-500 via-indigo-600 to-purple-700',
+      light: 'from-indigo-50 to-purple-50',
+      accent: 'text-indigo-600',
+      shadow: 'shadow-indigo-500/25',
+      border: 'border-indigo-200/50'
     },
-    green: {
-      gradient: 'bg-gradient-to-br from-emerald-500 via-green-600 to-green-700',
-      light: 'bg-emerald-50',
+    emerald: {
+      gradient: 'from-emerald-500 via-green-600 to-teal-700',
+      light: 'from-emerald-50 to-teal-50',
       accent: 'text-emerald-600',
-      shadow: 'shadow-emerald-500/25'
+      shadow: 'shadow-emerald-500/25',
+      border: 'border-emerald-200/50'
     },
     purple: {
-      gradient: 'bg-gradient-to-br from-purple-500 via-purple-600 to-purple-700',
-      light: 'bg-purple-50',
+      gradient: 'from-purple-500 via-purple-600 to-pink-700',
+      light: 'from-purple-50 to-pink-50',
       accent: 'text-purple-600',
-      shadow: 'shadow-purple-500/25'
+      shadow: 'shadow-purple-500/25',
+      border: 'border-purple-200/50'
     },
-    orange: {
-      gradient: 'bg-gradient-to-br from-orange-500 via-orange-600 to-red-600',
-      light: 'bg-orange-50',
-      accent: 'text-orange-600',
-      shadow: 'shadow-orange-500/25'
+    rose: {
+      gradient: 'from-rose-500 via-pink-600 to-red-700',
+      light: 'from-rose-50 to-pink-50',
+      accent: 'text-rose-600',
+      shadow: 'shadow-rose-500/25',
+      border: 'border-rose-200/50'
     },
   };
 
   const colors = colorMap[color];
 
+  // Simple sparkline SVG
+  const SparklineChart = ({ data }) => {
+    const max = Math.max(...data);
+    const min = Math.min(...data);
+    const range = max - min || 1;
+    
+    const points = data.map((value, index) => {
+      const x = (index / (data.length - 1)) * 100;
+      const y = 100 - ((value - min) / range) * 100;
+      return `${x},${y}`;
+    }).join(' ');
+
+    return (
+      <svg className="w-20 h-8" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <polyline
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          points={points}
+          className={colors.accent}
+        />
+        <defs>
+          <linearGradient id={`gradient-${color}`} x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="currentColor" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="currentColor" stopOpacity="0.05" />
+          </linearGradient>
+        </defs>
+        <polyline
+          fill={`url(#gradient-${color})`}
+          stroke="none"
+          points={`0,100 ${points} 100,100`}
+          className={colors.accent}
+        />
+      </svg>
+    );
+  };
+
   return (
-    <div className={`group relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20 hover:shadow-2xl ${colors.shadow} transition-all duration-300 transform hover:scale-105 hover:-translate-y-1`}>
-      {/* Background Pattern */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-transparent rounded-2xl"></div>
+    <div className={`group relative bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-xl border ${colors.border} hover:shadow-2xl ${colors.shadow} transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 overflow-hidden`}>
+      {/* Animated Background Gradient */}
+      <div className={`absolute inset-0 bg-gradient-to-br ${colors.light} opacity-50 group-hover:opacity-70 transition-opacity duration-500`}></div>
       
-      {/* Floating Icon */}
-      <div className={`absolute -top-4 -right-4 w-16 h-16 ${colors.gradient} rounded-2xl flex items-center justify-center text-white shadow-lg transform rotate-12 group-hover:rotate-0 transition-transform duration-300`}>
-        {icon}
-      </div>
+      {/* Floating Decorative Elements */}
+      <div className={`absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br ${colors.gradient} rounded-full opacity-10 group-hover:opacity-20 transition-opacity duration-500 animate-pulse`}></div>
+      <div className={`absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br ${colors.gradient} rounded-full opacity-5 group-hover:opacity-15 transition-opacity duration-500 animate-pulse delay-300`}></div>
 
       {/* Content */}
       <div className="relative z-10">
-        <div className="flex items-start justify-between mb-4">
-          <div className={`p-3 ${colors.light} rounded-xl`}>
-            <div className={`${colors.accent}`}>
+        {/* Header with Icon and Trend */}
+        <div className="flex items-start justify-between mb-6">
+          <div className={`p-4 bg-gradient-to-br ${colors.gradient} rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300 transform group-hover:scale-110`}>
+            <div className="text-white">
               {icon}
             </div>
           </div>
+          
           {trend && (
-            <div className="flex items-center gap-1 px-2 py-1 bg-green-100 rounded-lg">
-              <TrendingUp className="w-4 h-4 text-green-600" />
-              <span className="text-xs font-semibold text-green-700">{trend}</span>
+            <div className="flex flex-col items-end">
+              <div className="flex items-center gap-1 px-3 py-1 bg-green-100/80 backdrop-blur-sm rounded-lg shadow-sm">
+                <ArrowUpRight className="w-4 h-4 text-green-600" />
+                <span className="text-sm font-bold text-green-700">{trend}</span>
+              </div>
+              <span className="text-xs text-gray-500 mt-1">{subtitle}</span>
             </div>
           )}
         </div>
         
-        <h3 className="text-sm font-medium text-gray-600 mb-2">{title}</h3>
-        <p className="text-3xl font-bold text-gray-900 mb-1">{value}</p>
-        
-        {/* Progress Bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
-          <div className={`h-2 ${colors.gradient} rounded-full transition-all duration-1000 ease-out`} style={{width: '75%'}}></div>
+        {/* Title and Value */}
+        <div className="mb-4">
+          <h3 className="text-sm font-semibold text-gray-600 mb-2 uppercase tracking-wide">{title}</h3>
+          <p className="text-4xl font-bold text-gray-900 mb-1">{value}</p>
+        </div>
+
+        {/* Sparkline Chart */}
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <SparklineChart data={sparkline} />
+          </div>
+          <div className="ml-4">
+            <div className={`p-2 ${colors.light} bg-gradient-to-br rounded-lg`}>
+              <Zap className={`w-4 h-4 ${colors.accent}`} />
+            </div>
+          </div>
+        </div>
+
+        {/* Progress Indicator */}
+        <div className="mt-6">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-xs text-gray-500">Performance</span>
+            <span className="text-xs font-semibold text-gray-700">85%</span>
+          </div>
+          <div className="w-full bg-gray-200/50 rounded-full h-2 overflow-hidden">
+            <div 
+              className={`h-2 bg-gradient-to-r ${colors.gradient} rounded-full transition-all duration-1000 ease-out transform origin-left`} 
+              style={{width: '85%'}}
+            ></div>
+          </div>
         </div>
       </div>
 
-      {/* Hover Effect Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-white/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      {/* Hover Glow Effect */}
+      <div className={`absolute inset-0 bg-gradient-to-br ${colors.gradient} opacity-0 group-hover:opacity-5 rounded-3xl transition-opacity duration-500`}></div>
     </div>
   );
 };
