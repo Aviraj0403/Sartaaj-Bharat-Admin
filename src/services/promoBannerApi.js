@@ -42,9 +42,14 @@ export const getAdminPromoBanners = async () => {
 
 export const getPromoBanner = async (bannerId) => {
   try {
+    console.log('Fetching banner with ID:', bannerId);
     const response = await Axios.get(`/promo-banners/admin/${bannerId}`);
+    console.log('Get banner API response:', response.data);
+    
     if (response.data.success) {
-      return response.data.banner || response.data.data;
+      const banner = response.data.promoBanner || response.data.banner || response.data.data;
+      console.log('Extracted banner data:', banner);
+      return banner;
     } else {
       throw new Error('Failed to fetch promo banner');
     }
@@ -128,7 +133,7 @@ export const toggleBannerStatus = async (bannerId) => {
   try {
     const response = await Axios.patch(`/promo-banners/admin/${bannerId}/toggle`);
     if (response.data.success) {
-      return response.data.banner || response.data.data;
+      return response.data.promoBanner || response.data.banner || response.data.data;
     } else {
       throw new Error('Failed to toggle banner status');
     }
