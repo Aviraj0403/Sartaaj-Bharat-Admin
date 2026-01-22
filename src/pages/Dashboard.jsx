@@ -176,12 +176,6 @@ export default function Dashboard() {
                 <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-lg">
                   <BarChart3 className="w-8 h-8 text-white" />
                 </div>
-                <div>
-                  <h1 className="text-4xl xl:text-5xl font-bold bg-gradient-to-r from-gray-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent">
-                    Executive Dashboard
-                  </h1>
-                  <p className="text-gray-600 text-lg mt-1">Real-time business intelligence & analytics</p>
-                </div>
               </div>
               
               {/* Status Indicators */}
@@ -395,35 +389,6 @@ export default function Dashboard() {
 
         {/* Premium Analytics Section */}
         <section className="mb-12">
-          <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 gap-6">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
-                <Activity className="w-8 h-8 text-indigo-600" />
-                Advanced Analytics
-              </h2>
-              <p className="text-gray-600 text-lg">Comprehensive business performance insights</p>
-            </div>
-            
-            {/* Analytics Controls */}
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20">
-                <Calendar className="w-4 h-4 text-gray-600" />
-                <select className="bg-transparent text-sm font-medium text-gray-700 border-none outline-none">
-                  <option>Last 7 days</option>
-                  <option>Last 30 days</option>
-                  <option>Last 90 days</option>
-                </select>
-              </div>
-              <button className="flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 group">
-                <Filter className="w-4 h-4 text-gray-600 group-hover:text-indigo-600 transition-colors" />
-                <span className="text-sm font-medium text-gray-700">Filters</span>
-              </button>
-              <button className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 group">
-                <Eye className="w-4 h-4 group-hover:animate-pulse" />
-                <span className="font-semibold">View Details</span>
-              </button>
-            </div>
-          </div>
 
           {/* Charts Grid */}
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
