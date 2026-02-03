@@ -1,8 +1,89 @@
-import React, { useRef } from 'react';
-import { X, Printer } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { X, Printer, Truck, Package, MapPin, Clock, CheckCircle, XCircle, RefreshCw, Download, Eye } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+import {
+  createShipment,
+  generateShippingLabel,
+  trackOrderShipment,
+  cancelShipment
+} from '../../services/ShiprocketApi';
 
 const AdminOrderDetails = ({ order, onClose, loading }) => {
   const receiptRef = useRef();
+  const [shippingLoading, setShippingLoading] = useState(false);
+  const [trackingData, setTrackingData] = useState(null);
+
+  // Handle shipment actions
+  const handleShipmentAction = async (action) => {
+    try {
+      setShippingLoading(true);
+      let response;
+      
+      switch (action) {
+        case 'create':
+          response = await createShipment(order._id);
+          toast.success('Shipment created successfully');
+          break;
+        case 'label':
+          response = await generateShippingLabel(order._id);
+          if (response.label_url) {
+            window.open(response.label_url, '_blank');
+          }
+          toast.success('Shipping label generated');
+          break;
+        case 'track':
+          response = await trackOrderShipment(order._id);
+          setTrackingData(response.tracking);
+          toast.success('Tracking updated');
+          break;
+        case 'cancel':
+          if (window.confirm('Are you sure you want to cancel this shipment?')) {
+            response = await cancelShipment(order._id);
+            toast.success('Shipment cancelled');
+          }
+          break;
+        default:
+          return;
+      }
+      
+      // Refresh order data if needed
+      if (response && window.location.reload) {
+        // You might want to call a refresh function here instead
+      }
+    } catch (error) {
+      console.error(`Error ${action} shipment:`, error);
+      toast.error(`Failed to ${action} shipment: ${error.message}`);
+    } finally {
+      setShippingLoading(false);
+    }
+  };
+
+  const getStatusColor = (status) => {
+    const statusColors = {
+      'Delivered': 'bg-green-100 text-green-800 border-green-200',
+      'Shipped': 'bg-blue-100 text-blue-800 border-blue-200',
+      'Processing': 'bg-yellow-100 text-yellow-800 border-yellow-200',
+      'Cancelled': 'bg-red-100 text-red-800 border-red-200',
+      'NEW': 'bg-gray-100 text-gray-800 border-gray-200',
+      'default': 'bg-gray-100 text-gray-800 border-gray-200'
+    };
+    return statusColors[status] || statusColors.default;
+  };
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'Delivered':
+        return <CheckCircle className="w-4 h-4" />;
+      case 'Shipped':
+        return <Truck className="w-4 h-4" />;
+      case 'Processing':
+        return <Clock className="w-4 h-4" />;
+      case 'Cancelled':
+        return <XCircle className="w-4 h-4" />;
+      default:
+        return <Package className="w-4 h-4" />;
+    }
+  };
 
 const handlePrint = () => {
   const tableHTML =
@@ -332,6 +413,118 @@ const handlePrint = () => {
               </div>
             </div>
           )}
+
+          {/* Shiprocket Shipping Management */}
+          <div className="border border-gray-200 rounded-lg p-4 shadow-sm">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 flex items-center gap-2">
+                <Truck className="w-5 h-5 text-orange-500" />
+                Shipping Management
+              </h3>
+              {order.shipping?.shiprocket?.current_status && (
+                <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(order.shipping.shiprocket.current_status)}`}>
+                  {getStatusIcon(order.shipping.shiprocket.current_status)}
+                  {order.shipping.shiprocket.current_status}
+                </span>
+              )}
+            </div>
+
+            {order.shipping?.shiprocket ? (
+              <div className="space-y-4">
+                {/* Shipping Details */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div className="space-y-2">
+                    <p><span className="font-medium">Courier:</span> {order.shipping.shiprocket.courier_name || 'N/A'}</p>
+                    <p><span className="font-medium">AWB Code:</span> {order.shipping.shiprocket.awb_code || 'N/A'}</p>
+                    <p><span className="font-medium">Shipment ID:</span> {order.shipping.shiprocket.shipment_id || 'N/A'}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p><span className="font-medium">Weight:</span> {order.shipping.weight || 'N/A'} kg</p>
+                    <p><span className="font-medium">Method:</span> {order.shipping.method || 'N/A'}</p>
+                    <p><span className="font-medium">Status:</span> {order.shipping.shiprocket.shipment_status || 'N/A'}</p>
+                  </div>
+                </div>
+
+                {/* Shipping Actions */}
+                <div className="flex flex-wrap gap-2 pt-3 border-t border-gray-200">
+                  <button
+                    onClick={() => handleShipmentAction('track')}
+                    disabled={shippingLoading}
+                    className="flex items-center gap-1 px-3 py-1.5 bg-green-500 text-white text-xs rounded hover:bg-green-600 disabled:opacity-50"
+                  >
+                    <RefreshCw className={`w-3 h-3 ${shippingLoading ? 'animate-spin' : ''}`} />
+                    Update Tracking
+                  </button>
+                  
+                  {order.shipping.shiprocket.label_url ? (
+                    <a
+                      href={order.shipping.shiprocket.label_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 px-3 py-1.5 bg-purple-500 text-white text-xs rounded hover:bg-purple-600"
+                    >
+                      <Download className="w-3 h-3" />
+                      View Label
+                    </a>
+                  ) : (
+                    <button
+                      onClick={() => handleShipmentAction('label')}
+                      disabled={shippingLoading}
+                      className="flex items-center gap-1 px-3 py-1.5 bg-purple-500 text-white text-xs rounded hover:bg-purple-600 disabled:opacity-50"
+                    >
+                      <Download className="w-3 h-3" />
+                      Generate Label
+                    </button>
+                  )}
+
+                  {order.orderStatus !== 'Delivered' && order.orderStatus !== 'Cancelled' && (
+                    <button
+                      onClick={() => handleShipmentAction('cancel')}
+                      disabled={shippingLoading}
+                      className="flex items-center gap-1 px-3 py-1.5 bg-red-500 text-white text-xs rounded hover:bg-red-600 disabled:opacity-50"
+                    >
+                      <XCircle className="w-3 h-3" />
+                      Cancel Shipment
+                    </button>
+                  )}
+                </div>
+
+                {/* Tracking History */}
+                {trackingData?.tracking_history && trackingData.tracking_history.length > 0 && (
+                  <div className="pt-3 border-t border-gray-200">
+                    <h4 className="font-medium text-gray-800 mb-2">Tracking History</h4>
+                    <div className="max-h-40 overflow-y-auto space-y-2">
+                      {trackingData.tracking_history.map((update, index) => (
+                        <div key={index} className="flex items-start gap-2 text-xs">
+                          <div className="w-2 h-2 bg-orange-400 rounded-full mt-1.5 flex-shrink-0"></div>
+                          <div>
+                            <p className="font-medium">{update.current_status}</p>
+                            <p className="text-gray-500">{update.activity}</p>
+                            <p className="text-gray-400">{new Date(update.date).toLocaleString()}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-4">
+                <Package className="w-8 h-8 mx-auto text-gray-400 mb-2" />
+                <p className="text-sm text-gray-500 mb-3">No shipment created yet</p>
+                {order.orderStatus === 'Processing' && (
+                  <button
+                    onClick={() => handleShipmentAction('create')}
+                    disabled={shippingLoading}
+                    className="flex items-center gap-2 mx-auto px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 disabled:opacity-50"
+                  >
+                    <Package className="w-4 h-4" />
+                    {shippingLoading ? 'Creating...' : 'Create Shipment'}
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
 
           {/* Items */}
           <div className="border border-gray-200 rounded-lg p-4 shadow-sm">

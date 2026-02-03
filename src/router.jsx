@@ -24,6 +24,8 @@ import AdminStockManager from "./pages/stocks/AdminStockManager";
 import OrphanedPayments from "./pages/payments/OrphanedPayments";
 import AdminOrderLeads from "./pages/Leads/AdminOrderLeads";
 import PromoBannerAdmin from "./pages/Banner/PromoBannerAdmin";
+import ShiprocketManager from "./pages/orders/ShiprocketManager";
+import ShippingAnalytics from "./pages/orders/ShippingAnalytics";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -99,6 +101,8 @@ const router = createBrowserRouter([
         element: <SalesReport />, // redirect /admin to /admin/dashboard
       },
       { path: "orders", element: <AdminOrderManager /> },
+      { path: "shipping", element: <ShiprocketManager /> },
+      { path: "shipping-analytics", element: <ShippingAnalytics /> },
       {path: "stocks", element: < AdminStockManager/> },
       { path: "PaymentDetails", element: <PaymentList />, },
       {

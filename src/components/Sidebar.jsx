@@ -7,6 +7,8 @@ import {
   FaUsers,
   FaTags,
   FaChartBar,
+  FaTruck,
+  FaShippingFast,
 } from "react-icons/fa";
 import { MdDashboard, MdCategory } from "react-icons/md";
 import { IoMdLogOut } from "react-icons/io";
@@ -65,6 +67,8 @@ function Sidebar({ className, toggleSidebar }) {
 
         <NavSection title="Orders">
           <NavItem to="orders" label="All Orders" icon={<FaClipboardList size={20} />} onClick={toggleSidebar} />
+          <NavItem to="shipping" label="Shipping Manager" icon={<FaTruck size={20} />} onClick={toggleSidebar} />
+          <NavItem to="shipping-analytics" label="Shipping Analytics" icon={<FaShippingFast size={20} />} onClick={toggleSidebar} />
         </NavSection>
 
         <NavSection title="Customers">
