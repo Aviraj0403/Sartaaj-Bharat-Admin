@@ -28,6 +28,14 @@ export default function AddProductForm() {
       shelfLife: 12,
       usageInstructions: "",
     },
+    weight: 0.5,  // Default weight in kg
+    dimensions: {
+      length: 10,
+      breadth: 10,
+      height: 10,
+    },
+    hsn: "3304",  // HSN code for cosmetics
+    sku: "",
     variants: [],
   });
 
@@ -111,6 +119,12 @@ export default function AddProductForm() {
       setFormData((prev) => ({
         ...prev,
         additionalInfo: { ...prev.additionalInfo, [field]: value },
+      }));
+    } else if (name.startsWith("dimensions.")) {
+      const field = name.split(".")[1];
+      setFormData((prev) => ({
+        ...prev,
+        dimensions: { ...prev.dimensions, [field]: parseFloat(value) || 0 },
       }));
     } else {
       setFormData((prev) => ({
@@ -293,9 +307,9 @@ export default function AddProductForm() {
 
     const fd = new FormData();
 
-    // Append all fields except variants and additionalInfo
+    // Append all fields except variants, additionalInfo, and dimensions
     Object.entries(formData).forEach(([key, val]) => {
-      if (key !== "variants" && key !== "additionalInfo") {
+      if (key !== "variants" && key !== "additionalInfo" && key !== "dimensions") {
         fd.append(key, val);
       }
     });
@@ -305,6 +319,9 @@ export default function AddProductForm() {
 
     // Append additionalInfo as JSON string
     fd.append("additionalInfo", JSON.stringify(formData.additionalInfo));
+
+    // Append dimensions as JSON string
+    fd.append("dimensions", JSON.stringify(formData.dimensions));
 
     // Append variants with indexed keys (exact match to backend)
     formData.variants.forEach((variant, index) => {
@@ -357,6 +374,10 @@ export default function AddProductForm() {
       isBestSeller: false,
       status: "Active",
       additionalInfo: { skinType: "", shelfLife: 12, usageInstructions: "" },
+      weight: 0.5,
+      dimensions: { length: 10, breadth: 10, height: 10 },
+      hsn: "3304",
+      sku: "",
       variants: [],
     });
     removeImages();
@@ -541,6 +562,75 @@ export default function AddProductForm() {
               onChange={handleChange}
               placeholder="How to use the product..."
             />
+          </div>
+
+          {/* Shipping Information */}
+          <div className="border border-orange-200 rounded-xl p-6 bg-orange-50">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <span className="text-orange-600">📦</span>
+              Shipping Information
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InputField
+                label="Weight (kg) *"
+                name="weight"
+                type="number"
+                step="0.01"
+                min="0.01"
+                value={formData.weight}
+                onChange={handleChange}
+                placeholder="e.g. 0.5"
+              />
+              <InputField
+                label="HSN Code"
+                name="hsn"
+                value={formData.hsn}
+                onChange={handleChange}
+                placeholder="e.g. 3304"
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+              <InputField
+                label="Length (cm)"
+                name="dimensions.length"
+                type="number"
+                step="0.1"
+                min="0.5"
+                value={formData.dimensions.length}
+                onChange={handleChange}
+                placeholder="e.g. 10"
+              />
+              <InputField
+                label="Width (cm)"
+                name="dimensions.breadth"
+                type="number"
+                step="0.1"
+                min="0.5"
+                value={formData.dimensions.breadth}
+                onChange={handleChange}
+                placeholder="e.g. 10"
+              />
+              <InputField
+                label="Height (cm)"
+                name="dimensions.height"
+                type="number"
+                step="0.1"
+                min="0.5"
+                value={formData.dimensions.height}
+                onChange={handleChange}
+                placeholder="e.g. 10"
+              />
+            </div>
+            <InputField
+              label="SKU (Optional)"
+              name="sku"
+              value={formData.sku}
+              onChange={handleChange}
+              placeholder="e.g. PROD-001"
+            />
+            <p className="text-xs text-gray-600 mt-2">
+              💡 Accurate weight and dimensions help calculate correct shipping charges
+            </p>
           </div>
 
           {/* Variants Section */}

@@ -15,10 +15,10 @@ Axios.interceptors.response.use(
   async (err) => {
     const originalRequest = err.config;
 
-    // 👉 Skip refresh logic if the failing endpoint is /me
-    const isMeRoute = originalRequest.url?.includes("/auth/me");
+    // 👉 Skip refresh logic if the failing endpoint is /profile
+    const isProfileRoute = originalRequest.url?.includes("/auth/profile");
 
-    if (err.response?.status === 401 && !originalRequest._retry && !isMeRoute) {
+    if (err.response?.status === 401 && !originalRequest._retry && !isProfileRoute) {
       originalRequest._retry = true;
 
       try {

@@ -37,60 +37,60 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    
+
     element: (
-      <ProtectedRoute allowedRoles={["admin"]}>
+      <ProtectedRoute allowedRoles={["ADMIN"]}>
         <AdminLayout /> {/* 👈 Layout wraps all children */}
       </ProtectedRoute>
     ),
     children: [
       {
-      index: true,
-      element: <Navigate to="dashboard" replace />,
-     },
+        index: true,
+        element: <Navigate to="dashboard" replace />,
+      },
       {
         path: "dashboard", // ⛔ DO NOT use /admin/dashboard here
         element: <Dashboard />,
       },
       {
-         path: "users",
-         element : < TotalUserOnWeb />,
+        path: "users",
+        element: < TotalUserOnWeb />,
       },
       {
-        path:"addProduct",
-        element: <AddFoodForm/>
+        path: "addProduct",
+        element: <AddFoodForm />
       },
       {
-          path:"adminProducts",
-          element: < AdminProduct />
+        path: "adminProducts",
+        element: < AdminProduct />
       },
       {
-          path:"editProduct/:productId",
-          element: <EditProduct />
+        path: "editProduct/:productId",
+        element: <EditProduct />
       },
       {
-           path:"product-view/:productId",
-           element: <ProductView />
+        path: "product-view/:productId",
+        element: <ProductView />
       },
       {
         path: "home",
-        element: <HomePage/>
+        element: <HomePage />
       },
       {
         path: "categories",
-        element : <CategoryList />
+        element: <CategoryList />
       },
       {
-        path : "addCategory",
-        element : <AddCategoryForm />
+        path: "addCategory",
+        element: <AddCategoryForm />
       },
       {
-        path : "editCategory/:categoryId",
-        element : <EditCategory />
+        path: "editCategory/:categoryId",
+        element: <EditCategory />
       },
       {
-        path : "viewCategory/:categoryId",
-        element : <ViewCategory />
+        path: "viewCategory/:categoryId",
+        element: <ViewCategory />
       },
       {
         path: "offers",
@@ -103,11 +103,11 @@ const router = createBrowserRouter([
       { path: "orders", element: <AdminOrderManager /> },
       { path: "shipping", element: <ShiprocketManager /> },
       { path: "shipping-analytics", element: <ShippingAnalytics /> },
-      {path: "stocks", element: < AdminStockManager/> },
+      { path: "stocks", element: < AdminStockManager /> },
       { path: "PaymentDetails", element: <PaymentList />, },
       {
-        path : "orphaned-payments",
-        element : <OrphanedPayments />
+        path: "orphaned-payments",
+        element: <OrphanedPayments />
       },
       {
         path: "leads",
@@ -115,7 +115,7 @@ const router = createBrowserRouter([
       },
       {
         path: "banners",
-        element : <PromoBannerAdmin />
+        element: <PromoBannerAdmin />
       }
     ],
   },

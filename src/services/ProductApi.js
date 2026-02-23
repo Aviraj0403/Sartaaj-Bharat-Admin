@@ -3,7 +3,7 @@ import Axios from '../utils/Axios';
 
 /* ---------- CREATE ---------- */
 export const createProduct = async (formData) => {
-  const res = await Axios.post('/products/createProduct', formData, {
+  const res = await Axios.post('/products', formData, {
     headers: { 'Content-Type': 'multipart/form-data' }
   });
   return res.data;
@@ -11,7 +11,7 @@ export const createProduct = async (formData) => {
 
 /* ---------- UPDATE ---------- */
 export const updateProduct = async (id, formData) => {
-  const res = await Axios.patch(`/products/updateProduct/${id}`, formData, {
+  const res = await Axios.put(`/products/${id}`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' }
   });
   return res.data;
@@ -19,20 +19,20 @@ export const updateProduct = async (id, formData) => {
 
 /* ---------- DELETE ---------- */
 export const deleteProduct = async (id) => {
-  const res = await Axios.delete(`/products/deleteProduct/${id}`);
+  const res = await Axios.delete(`/products/${id}`);
   return res.data;
 };
 
 /* ---------- SINGLE ---------- */
 export const getProduct = async (id) => {
-  const res = await Axios.get(`/products/getAdminProduct/${id}`);
-  return res.data;               // { success, product }
+  const res = await Axios.get(`/products/${id}`);
+  return res.data;               // { success, data }
 };
 
 /* ---------- ADMIN LIST ---------- */
 export const getAdminProduct = async (params = {}) => {
-  const res = await Axios.get('/products/getAdminProduct', { params });
-  return res.data;               // { success, products, pagination }
+  const res = await Axios.get('/products', { params });
+  return res.data;               // { success, data, meta }
 };
 
 /* ---------- USER LIST (public) ---------- */

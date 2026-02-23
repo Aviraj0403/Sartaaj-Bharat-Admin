@@ -3,6 +3,7 @@ import axios from '../../utils/Axios';
 import { toast } from 'react-hot-toast';
 import { Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 import AdminOrderDetails from './AdminOrderDetails';
+import QuickShipButton from '../../components/QuickShipButton';
 
 const getOrderDetailsAdmin = async (orderId) => {
   try {
@@ -265,6 +266,7 @@ const AdminOrderManager = () => {
                     { label: 'Status', field: 'orderStatus' },
                     { label: 'Payment', field: 'paymentStatus' },
                     { label: 'Date', field: 'createdAt' },
+                    { label: 'Shipping', field: 'shipping' },
                     { label: 'Actions', field: null },
                   ].map(({ label }) => (
                     <th
@@ -298,20 +300,40 @@ const AdminOrderManager = () => {
                         {order.totalAmount ? `₹${order.totalAmount.toFixed(2)}` : 'N/A'}
                       </td>
                       <td className="px-4 sm:px-6 py-3 sm:py-4 text-sm">
-                        <select
-                          value={order.orderStatus || 'Pending'}
-                          onChange={(e) => updateStatus(order._id, e.target.value)}
-                          className="border rounded px-2 py-1 text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-400 disabled:opacity-50 w-full sm:w-auto"
-                          disabled={!order._id || loading}
-                        >
-                          {statuses.map((s) => (
-                            <option key={s} value={s}>{s}</option>
-                          ))}
-                        </select>
+                        <div className="space-y-1">
+                          <select
+                            value={order.orderStatus || 'Pending'}
+                            onChange={(e) => updateStatus(order._id, e.target.value)}
+                            className="border rounded px-2 py-1 text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-400 disabled:opacity-50 w-full sm:w-auto text-xs"
+                            disabled={!order._id || loading}
+                          >
+                            {statuses.map((s) => (
+                              <option key={s} value={s}>{s}</option>
+                            ))}
+                          </select>
+                          {/* Shiprocket Status */}
+                          {order.shipping?.shiprocket?.current_status && (
+                            <div className="text-xs text-blue-600 font-medium">
+                              📦 {order.shipping.shiprocket.current_status}
+                            </div>
+                          )}
+                          {order.shipping?.shiprocket?.awb_code && (
+                            <div className="text-xs text-gray-500">
+                              AWB: {order.shipping.shiprocket.awb_code}
+                            </div>
+                          )}
+                        </div>
                       </td>
                       <td className="px-4 sm:px-6 py-3 sm:py-4 text-sm text-gray-900">{order.paymentStatus || 'N/A'}</td>
                       <td className="px-4 sm:px-6 py-3 sm:py-4 text-sm text-gray-900">
                         {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}
+                      </td>
+                      <td className="px-4 sm:px-6 py-3 sm:py-4 text-sm">
+                        <QuickShipButton 
+                          order={order} 
+                          onUpdate={handleFetch}
+                          size="sm"
+                        />
                       </td>
                       <td className="px-4 sm:px-6 py-3 sm:py-4 text-sm flex space-x-3 sm:space-x-4 justify-center">
                         <button
@@ -428,7 +450,36 @@ const AdminOrderManager = () => {
                           <option key={s} value={s}>{s}</option>
                         ))}
                       </select>
+                      
+                      {/* Shiprocket Status for Mobile */}
+                      {order.shipping?.shiprocket?.current_status && (
+                        <div className="mt-2 p-2 bg-blue-50 rounded-md">
+                          <p className="text-xs text-blue-700 font-medium">
+                            📦 Shiprocket Status: {order.shipping.shiprocket.current_status}
+                          </p>
+                          {order.shipping.shiprocket.awb_code && (
+                            <p className="text-xs text-gray-600 mt-1">
+                              AWB: {order.shipping.shiprocket.awb_code}
+                            </p>
+                          )}
+                          {order.shipping.courier?.name && (
+                            <p className="text-xs text-gray-600">
+                              Courier: {order.shipping.courier.name}
+                            </p>
+                          )}
+                        </div>
+                      )}
                     </div>
+                    
+                    {/* Quick Ship Button for Mobile */}
+                    <div className="mt-3 pt-3 border-t border-gray-200">
+                      <QuickShipButton 
+                        order={order} 
+                        onUpdate={handleFetch}
+                        size="md"
+                      />
+                    </div>
+
                     <div className="mt-3 pt-3 border-t border-gray-200 flex justify-end space-x-3">
                       <button
                         onClick={() => fetchOrderDetails(order._id)}

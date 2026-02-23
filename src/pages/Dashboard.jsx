@@ -1,14 +1,15 @@
-import React ,{ useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { io } from 'socket.io-client';
-import { 
-  Printer, TrendingUp, Users, Package, DollarSign, Download, BarChart3, 
+import {
+  Printer, TrendingUp, Users, Package, DollarSign, Download, BarChart3,
   Activity, Zap, Star, Award, ArrowUpRight, Eye, RefreshCw, Calendar,
-  Filter, Settings, Bell, Search, Sparkles, Target, Globe
+  Filter, Settings, Bell, Search, Sparkles, Target, Globe, Shield, Clock
 } from 'lucide-react';
 import SalesChart from '../pages/report/SalesChart';
 import WeeklyStatsPieChart from '../pages/Graph/WeeklyStatsPieChart';
-import { getTodayOrders, getTotalRevenue, getTotalOrders, getWeeklyStats, getMonthlyStats, getTotalUsers ,getTotalProducts} from '../services/dashboartdApi'; // Import the necessary API functions
+import { getTodayOrders, getTotalRevenue, getTotalOrders, getWeeklyStats, getMonthlyStats, getTotalUsers, getTotalProducts } from '../services/dashboartdApi';
 import ModernLineChart from './Graph/ModernLineChart';
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Dashboard() {
   const [orders, setOrders] = useState([]);
@@ -37,25 +38,8 @@ export default function Dashboard() {
     fetchData();
 
     socket.on('newOrder', (order) => {
-      console.log('📦 New order received: ', order);
       setOrders((prevOrders) => [order, ...prevOrders]);
-    });
-
-    socket.on('connect', () => {
-      console.log('📡 Connected to WebSocket server');
-    });
-
-    socket.on('disconnect', (reason) => {
-      console.warn('📡 Disconnected from WebSocket:', reason);
-    });
-
-    socket.on('reconnect', (attemptNumber) => {
-      console.log('📡 Reconnected after', attemptNumber, 'attempts');
-      fetchData();
-    });
-
-    socket.on('connect_error', (error) => {
-      console.error('📡 Connection error:', error);
+      toast.success('New Order Received 📦');
     });
 
     return () => {
@@ -63,18 +47,27 @@ export default function Dashboard() {
     };
   }, []);
 
-  // Fetch data from all APIs
   const fetchData = async () => {
     try {
       setLoading(true);
+      const [
+        todayOrdersResponse,
+        totalRevenueResponse,
+        totalOrdersResponse,
+        weeklyStatsResponse,
+        monthlyStatsResponse,
+        totalUsersResponse,
+        totalProductsResponse
+      ] = await Promise.all([
+        getTodayOrders(),
+        getTotalRevenue(),
+        getTotalOrders(),
+        getWeeklyStats(),
+        getMonthlyStats(),
+        getTotalUsers(),
+        getTotalProducts()
+      ]);
 
-      const todayOrdersResponse = await getTodayOrders();
-      const totalRevenueResponse = await getTotalRevenue();
-      const totalOrdersResponse = await getTotalOrders();
-      const weeklyStatsResponse = await getWeeklyStats();
-      const monthlyStatsResponse = await getMonthlyStats();
-      const totalUsersResponse = await getTotalUsers();
-      const totalProductsResponse = await getTotalProducts();
       setOrders(todayOrdersResponse.orders || []);
       setTotalRevenue(totalRevenueResponse || 0);
       setTotalOrders(totalOrdersResponse || 0);
@@ -100,39 +93,24 @@ export default function Dashboard() {
         <head>
           <title>Today's Orders</title>
           <style>
-            body { padding: 20px; font-family: Arial, sans-serif; }
-            h2 { font-size: 24px; margin-bottom: 20px; color: #ea580c; }
+            body { padding: 40px; font-family: 'Outfit', sans-serif; background: #fff; color: #000; }
+            h2 { font-size: 32px; font-weight: 900; margin-bottom: 30px; letter-spacing: -1px; }
             .order-card { 
-              border: 1px solid #ddd; 
-              padding: 15px; 
-              margin-bottom: 15px; 
-              border-radius: 12px;
-              page-break-inside: avoid;
-              box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                border: 2px solid #f0f0f0; 
+                padding: 25px; 
+                margin-bottom: 25px; 
+                border-radius: 20px;
+                page-break-inside: avoid;
             }
-            .order-header { 
-              display: flex; 
-              justify-content: space-between; 
-              margin-bottom: 10px;
-              font-weight: bold;
-            }
-            .order-details { font-size: 14px; line-height: 1.6; }
-            .badge { 
-              padding: 4px 8px; 
-              border-radius: 4px; 
-              font-size: 12px;
-              font-weight: bold;
-            }
-            .badge-pending { background: #fed7aa; color: #c2410c; }
-            .badge-delivered { background: #dcfce7; color: #15803d; }
-            .badge-cancelled { background: #fee2e2; color: #b91c1c; }
-            @media print {
-              body { margin: 0; }
-            }
+            .order-header { display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: 800; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; }
+            .order-details { font-size: 15px; line-height: 1.8; color: #444; }
+            .badge { padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 900; text-transform: uppercase; }
+            .badge-pending { background: #fff7ed; color: #c2410c; }
+            .badge-delivered { background: #f0fdf4; color: #15803d; }
           </style>
         </head>
         <body>
-          <h2>Today's Orders - ${new Date().toLocaleDateString()}</h2>
+          <h2>MISSION REPORT: ORDERS - ${new Date().toLocaleDateString()}</h2>
           ${printContent}
         </body>
       </html>
@@ -147,388 +125,292 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden">
-      {/* Premium Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        {/* Primary gradient orbs */}
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-violet-400/30 via-purple-500/20 to-indigo-600/30 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-br from-cyan-400/30 via-blue-500/20 to-purple-600/30 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/3 left-1/3 w-80 h-80 bg-gradient-to-br from-pink-400/20 via-rose-500/15 to-orange-600/25 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-500"></div>
-        
-        {/* Secondary floating elements */}
-        <div className="absolute top-20 right-20 w-32 h-32 bg-gradient-to-br from-emerald-400/20 to-teal-600/20 rounded-full mix-blend-multiply filter blur-2xl animate-bounce"></div>
-        <div className="absolute bottom-20 left-20 w-24 h-24 bg-gradient-to-br from-amber-400/20 to-orange-600/20 rounded-full mix-blend-multiply filter blur-2xl animate-bounce delay-700"></div>
-        
-        {/* Geometric patterns */}
-        <div className="absolute top-1/4 right-1/4 w-2 h-2 bg-indigo-400/40 rounded-full animate-ping"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-1 h-1 bg-purple-400/40 rounded-full animate-ping delay-300"></div>
-        <div className="absolute top-3/4 right-1/3 w-1.5 h-1.5 bg-cyan-400/40 rounded-full animate-ping delay-700"></div>
-      </div>
+    <div className="space-y-12">
+      {/* Premium Header Metrics */}
+      <section>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="w-5 h-5 text-neon-cyan" />
+              <span className="text-xs font-black uppercase tracking-[0.3em] text-gray-500">Global Command Center</span>
+            </div>
+            <h2 className="text-4xl font-black tracking-tighter">OPERATIONAL <span className="text-neon-cyan">METRICS</span></h2>
+          </div>
+          <div className="flex gap-3">
+            <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 flex items-center gap-2">
+              <Clock className="w-4 h-4 text-gray-500" />
+              <span className="text-xs font-bold text-gray-400">Last Sync: Just Now</span>
+            </div>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={fetchData}
+              className="p-2 rounded-xl bg-neon-cyan/10 border border-neon-cyan/20 text-neon-cyan hover:bg-neon-cyan hover:text-obsidain transition-all"
+            >
+              <RefreshCw size={20} className={loading ? "animate-spin" : ""} />
+            </motion.button>
+          </div>
+        </div>
 
-      {/* Main Content Container */}
-      <div className="relative z-10 p-4 sm:p-6 lg:p-8">
-        {/* Premium Header Section */}
-    
-
-        {/* Enhanced KPI Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-12">
-          <PremiumKPICard 
-            title="Total Revenue" 
-            value={`₹${totalRevenue.toLocaleString()}`} 
-            color="indigo" 
-            icon={<DollarSign className="w-8 h-8" />}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+          <PremiumKPICard
+            title="Total Revenue"
+            value={`₹${totalRevenue.toLocaleString()}`}
+            color="cyan"
+            icon={<DollarSign />}
             trend="+12.5%"
             subtitle="vs last month"
             sparkline={[65, 78, 66, 44, 56, 67, 75]}
           />
-          <PremiumKPICard 
-            title="Today's Orders" 
-            value={orders.length} 
-            color="emerald" 
-            icon={<Package className="w-8 h-8" />}
+          <PremiumKPICard
+            title="Today's Orders"
+            value={orders.length}
+            color="purple"
+            icon={<Package />}
             trend="+8.2%"
             subtitle="vs yesterday"
             sparkline={[45, 52, 38, 24, 33, 26, 21]}
           />
-          <PremiumKPICard 
-            title="Products Available" 
-            value={totalProducts.toLocaleString()} 
-            color="purple" 
-            icon={<BarChart3 className="w-8 h-8" />}
+          <PremiumKPICard
+            title="Total Products"
+            value={totalProducts.toLocaleString()}
+            color="gold"
+            icon={<BarChart3 />}
             trend="+5.1%"
             subtitle="inventory growth"
             sparkline={[35, 41, 62, 42, 13, 18, 29]}
           />
-          <PremiumKPICard 
-            title="Active Customers" 
-            value={totalUsers.toLocaleString()} 
-            color="rose" 
-            icon={<Users className="w-8 h-8" />}
+          <PremiumKPICard
+            title="Total Users"
+            value={totalUsers.toLocaleString()}
+            color="red"
+            icon={<Users />}
             trend="+15.3%"
             subtitle="user engagement"
             sparkline={[24, 13, 98, 39, 48, 38, 58]}
           />
         </div>
+      </section>
 
-      {/* Today's Orders */}
-   <section className="z-10 relative mt-8 sm:mt-12">
-  <div className="flex justify-between items-center mb-4 sm:mb-6">
-    <h3 className="text-lg sm:text-xl font-semibold text-gray-800">
-      Today's Orders {orders.length > 0 && `(${orders.length})`}
-    </h3>
-    {orders.length > 0 && (
-      <button
-        onClick={handlePrintOrders}
-        className="flex items-center px-3 sm:px-4 py-2 bg-orange-500 text-white rounded-lg shadow-md hover:bg-orange-600 transition-colors"
-      >
-        <Printer size={18} className="mr-2" />
-        Print Orders
-      </button>
-    )}
-  </div>
-
-  {loading ? (
-    <div className="text-center text-gray-500 py-10 sm:py-20">
-      <div className="inline-block w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-      <p className="mt-4">Loading orders...</p>
-    </div>
-  ) : (
-    <div ref={ordersRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-      {orders.length > 0 ? (
-        orders.map((order) => (
-          <div
-            key={order._id}
-            className="order-card bg-white p-6 rounded-lg shadow-xl border border-gray-200 hover:shadow-2xl transition-shadow"
-          >
-            <div className="space-y-4">
-              {/* Customer & Status */}
-              <div className="order-header flex justify-between items-start">
-                <h4 className="text-base sm:text-lg font-semibold text-gray-800">
-                  {order?.shippingAddress?.name || 'N/A'}
-                </h4>
-                <span
-                  className={`badge px-2 py-1 rounded-full text-xs font-semibold shadow-sm ${
-                    order.orderStatus === 'Delivered'
-                      ? 'bg-green-100 text-green-600'
-                      : order.orderStatus === 'Cancelled'
-                      ? 'bg-red-100 text-red-600'
-                      : 'bg-orange-100 text-orange-600'
-                  }`}
-                >
-                  {order.orderStatus || 'Pending'}
-                </span>
+      {/* Analytics Engine */}
+      <section className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        <div className="xl:col-span-2 space-y-8">
+          <div className="glass-card rounded-3xl p-8 border border-white/5">
+            <div className="flex justify-between items-center mb-8">
+              <div>
+                <h3 className="text-2xl font-black tracking-tight text-white">REVENUE ANALYSIS</h3>
+                <p className="text-sm text-gray-500 font-bold uppercase tracking-wider">Growth trajectory & forecasting</p>
               </div>
-
-              {/* Order Details */}
-              <div className="order-details text-sm text-gray-600">
-                <p>
-                  <span className="font-medium">Order ID:</span>{' '}
-                  {order?._id ? order._id.slice(0, 10) + '...' : 'N/A'}
-                </p>
-                <p>
-                  <span className="font-medium">Time:</span>{' '}
-                  {order?.placedAt ? new Date(order.placedAt).toLocaleString() : 'N/A'}
-                </p>
-              </div>
-
-              {/* Payment Method & Status */}
-              <div className="text-sm text-gray-600">
-                <p>
-                  <span className="font-medium">Payment:</span> {order?.paymentMethod || 'N/A'}
-                </p>
-                <p>
-                  <span className="font-medium">Status:</span>{' '}
-                  <span
-                    className={`inline-block px-2 py-1 rounded-full text-xs font-semibold shadow-sm ${
-                      order.paymentStatus === 'Paid'
-                        ? 'bg-green-100 text-green-600'
-                        : 'bg-red-100 text-red-600'
-                    }`}
-                  >
-                    {order.paymentStatus || 'N/A'}
-                  </span>
-                </p>
-              </div>
-
-              {/* Items */}
-              <div className="border-t border-gray-300 pt-4">
-                <h5 className="text-lg font-semibold text-gray-800 mb-2">Items:</h5>
-                <div className="overflow-auto max-h-60">
-                  {order?.items?.length > 0 ? (
-                    <ul className="space-y-4 text-sm text-gray-700">
-                      {order.items.map((item, i) => (
-                        <li
-                          key={i}
-                          className="flex justify-between items-center py-3 px-4 rounded-lg bg-gray-50 shadow-sm hover:bg-gray-100 transition duration-200"
-                        >
-                          <div className="flex flex-col sm:flex-row sm:space-x-4 w-full">
-                            <div className="flex flex-col sm:flex-row w-full">
-                              <span className="font-medium text-gray-800 w-full sm:w-auto">
-                                {item?.selectedVariant?.name || item?.product?.name || 'Unknown'}
-                              </span>
-                              <span className="text-xs sm:text-sm text-gray-600 sm:ml-4">
-                                ({item?.selectedVariant?.size}/{item?.selectedVariant?.color})
-                              </span>
-                            </div>
-
-                            <div className="flex flex-col sm:flex-row sm:justify-end items-end text-sm space-x-1 sm:space-x-3">
-                              <span className="font-semibold text-gray-900">
-                                {item?.quantity || 0} × ₹
-                                {item?.selectedVariant?.price || item?.product?.price || 0}
-                              </span>
-                            </div>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <div className="text-center text-gray-500">No items available</div>
-                  )}
-                </div>
-              </div>
-
-              {/* Total */}
-              <p className="text-base sm:text-lg font-bold text-gray-900 border-t pt-2">
-                Total: ₹{order?.totalAmount?.toFixed(2) || '0.00'}
-              </p>
-            </div>
-          </div>
-        ))
-      ) : (
-        <div className="col-span-full text-center py-12 text-gray-600">
-          <p className="text-lg font-medium">No orders yet today.</p>
-          <p className="text-sm text-gray-500 mt-2">New orders will appear here automatically.</p>
-        </div>
-      )}
-    </div>
-  )}
-</section>
-
-
-        {/* Premium Analytics Section */}
-        <section className="mb-12">
-
-          {/* Charts Grid */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-            <div className="group transform hover:scale-[1.02] transition-all duration-500">
-              <WeeklyStatsPieChart statsData={weeklyStats} />
-            </div>
-            <div className="group transform hover:scale-[1.02] transition-all duration-500">
-              <ModernLineChart statsData={weeklyStats} />
-            </div>
-          </div>
-        </section>
-
-        {/* Enhanced Sales Performance */}
-        <section className="mb-12">
-          <div className="bg-white/60 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/30 p-8 hover:shadow-3xl transition-all duration-500 group">
-            <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 gap-6">
-              <div className="flex items-center gap-4">
-                <div className="p-4 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300">
-                  <Target className="w-8 h-8 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-3xl font-bold text-gray-900 mb-2">Sales Performance</h3>
-                  <p className="text-gray-600 text-lg">Monthly revenue trends and target analysis</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-100 to-emerald-100 rounded-xl shadow-lg border border-emerald-200/50">
-                  <TrendingUp className="w-5 h-5 text-emerald-600" />
-                  <span className="text-emerald-700 font-bold">+18.5% Growth</span>
-                </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-xl shadow-lg border border-blue-200/50">
-                  <Award className="w-5 h-5 text-blue-600" />
-                  <span className="text-blue-700 font-bold">Target Achieved</span>
-                </div>
+              <div className="flex gap-2">
+                <span className="px-3 py-1 rounded-lg bg-neon-cyan/10 text-neon-cyan text-[10px] font-black uppercase border border-neon-cyan/20">Live Sync</span>
               </div>
             </div>
             <SalesChart />
           </div>
-        </section>
-      </div>
+        </div>
+
+        <div className="space-y-8">
+          <div className="glass-card rounded-3xl p-8 border border-white/5 h-full">
+            <h3 className="text-xl font-black tracking-tight text-white mb-6 uppercase">Weekly Distribution</h3>
+            <WeeklyStatsPieChart statsData={weeklyStats} />
+            <div className="mt-8 space-y-4">
+              <div className="flex justify-between items-center p-4 rounded-2xl bg-white/5 border border-white/5">
+                <div className="flex items-center gap-3">
+                  <Shield className="w-5 h-5 text-neon-cyan" />
+                  <span className="text-sm font-bold">System Health</span>
+                </div>
+                <span className="text-xs font-black text-green-400">OPTIMAL</span>
+              </div>
+              <div className="flex justify-between items-center p-4 rounded-2xl bg-white/5 border border-white/5">
+                <div className="flex items-center gap-3">
+                  <Target className="w-5 h-5 text-neon-purple" />
+                  <span className="text-sm font-bold">Sales Target</span>
+                </div>
+                <span className="text-xs font-black text-neon-purple">88%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Orders Terminal */}
+      <section>
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-sartaaj-gradient rounded-2xl flex items-center justify-center shadow-lg">
+              <Activity className="text-white" />
+            </div>
+            <div>
+              <h3 className="text-2xl font-black tracking-tight">REAL-TIME <span className="text-neon-purple">ORDERS</span></h3>
+              <p className="text-sm text-gray-500 font-bold uppercase tracking-wider">Incoming data stream</p>
+            </div>
+          </div>
+          {orders.length > 0 && (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handlePrintOrders}
+              className="flex items-center gap-2 px-6 py-3 bg-white text-obsidian rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-neon-cyan transition-colors"
+            >
+              <Printer size={18} />
+              Export Report
+            </motion.button>
+          )}
+        </div>
+
+        {loading ? (
+          <div className="h-64 flex flex-col items-center justify-center glass-card rounded-3xl gap-4">
+            <div className="w-12 h-12 border-4 border-neon-cyan border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-xs font-black uppercase tracking-widest text-gray-500">Initializing Data Stream...</p>
+          </div>
+        ) : (
+          <div ref={ordersRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <AnimatePresence>
+              {orders.length > 0 ? (
+                orders.map((order, index) => (
+                  <motion.div
+                    key={order._id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="glass-card p-6 rounded-3xl border border-white/5 hover:border-white/20 transition-all group overflow-hidden relative"
+                  >
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-sartaaj-gradient opacity-[0.02] -rotate-45 translate-x-12 -translate-y-12" />
+                    <div className="space-y-6 relative z-10">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="text-lg font-black tracking-tight group-hover:text-neon-cyan transition-colors">
+                            {order?.shippingAddress?.name || 'UNDISCLOSED'}
+                          </h4>
+                          <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">
+                            ID: #{order?._id?.slice(-8).toUpperCase()}
+                          </p>
+                        </div>
+                        <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest shadow-sm ${order.orderStatus === 'Delivered'
+                          ? 'bg-green-500/10 text-green-400 border border-green-500/20'
+                          : order.orderStatus === 'Cancelled'
+                            ? 'bg-red-500/10 text-red-500 border border-red-500/20'
+                            : 'bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/20'
+                          }`}>
+                          {order.orderStatus || 'PENDING'}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4 py-4 border-y border-white/5">
+                        <div>
+                          <p className="text-[10px] text-gray-500 font-bold uppercase mb-1">Payment</p>
+                          <p className="text-xs font-bold">{order?.paymentMethod || 'UNKNOWN'}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-[10px] text-gray-500 font-bold uppercase mb-1">Status</p>
+                          <span className={`text-[10px] font-black ${order.paymentStatus === 'Paid' ? 'text-green-400' : 'text-sartaaj-red'}`}>
+                            {order.paymentStatus || 'UNPAID'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3">
+                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Payload Items</p>
+                        <div className="max-h-32 overflow-y-auto pr-2 space-y-2 no-scrollbar">
+                          {order?.items?.map((item, i) => (
+                            <div key={i} className="flex justify-between items-center p-2 rounded-xl bg-white/5 border border-white/5 text-[11px]">
+                              <span className="font-bold truncate max-w-[120px]">{item?.selectedVariant?.name || item?.product?.name}</span>
+                              <span className="font-black text-neon-cyan">x{item?.quantity}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="pt-4 flex justify-between items-center border-t border-white/5">
+                        <span className="text-[10px] text-gray-400 font-bold uppercase">Total Valuation</span>
+                        <p className="text-xl font-black text-white">₹{order?.totalAmount?.toLocaleString()}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))
+              ) : (
+                <div className="col-span-full h-48 flex flex-col items-center justify-center glass-card rounded-3xl opacity-50">
+                  <Globe className="w-12 h-12 mb-4 text-gray-600" />
+                  <p className="text-sm font-bold uppercase tracking-[0.2em] text-gray-500">No active signals detected</p>
+                </div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
+      </section>
     </div>
   );
 }
 
-// Premium KPI Card Component with Sparkline
 const PremiumKPICard = ({ title, value, color, icon, trend, subtitle, sparkline }) => {
   const colorMap = {
-    indigo: {
-      gradient: 'from-indigo-500 via-indigo-600 to-purple-700',
-      light: 'from-indigo-50 to-purple-50',
-      accent: 'text-indigo-600',
-      shadow: 'shadow-indigo-500/25',
-      border: 'border-indigo-200/50'
-    },
-    emerald: {
-      gradient: 'from-emerald-500 via-green-600 to-teal-700',
-      light: 'from-emerald-50 to-teal-50',
-      accent: 'text-emerald-600',
-      shadow: 'shadow-emerald-500/25',
-      border: 'border-emerald-200/50'
+    cyan: {
+      accent: 'text-neon-cyan',
+      glow: 'shadow-neon-cyan/20',
+      border: 'border-neon-cyan/20',
+      gradient: 'from-neon-cyan to-blue-600'
     },
     purple: {
-      gradient: 'from-purple-500 via-purple-600 to-pink-700',
-      light: 'from-purple-50 to-pink-50',
-      accent: 'text-purple-600',
-      shadow: 'shadow-purple-500/25',
-      border: 'border-purple-200/50'
+      accent: 'text-neon-purple',
+      glow: 'shadow-neon-purple/20',
+      border: 'border-neon-purple/20',
+      gradient: 'from-neon-purple to-pink-600'
     },
-    rose: {
-      gradient: 'from-rose-500 via-pink-600 to-red-700',
-      light: 'from-rose-50 to-pink-50',
-      accent: 'text-rose-600',
-      shadow: 'shadow-rose-500/25',
-      border: 'border-rose-200/50'
+    gold: {
+      accent: 'text-royal-gold',
+      glow: 'shadow-royal-gold/20',
+      border: 'border-royal-gold/20',
+      gradient: 'from-royal-gold to-orange-600'
     },
+    red: {
+      accent: 'text-sartaaj-red',
+      glow: 'shadow-sartaaj-red/20',
+      border: 'border-sartaaj-red/20',
+      gradient: 'from-sartaaj-red to-rose-600'
+    }
   };
 
   const colors = colorMap[color];
 
-  // Simple sparkline SVG
-  const SparklineChart = ({ data }) => {
-    const max = Math.max(...data);
-    const min = Math.min(...data);
-    const range = max - min || 1;
-    
-    const points = data.map((value, index) => {
-      const x = (index / (data.length - 1)) * 100;
-      const y = 100 - ((value - min) / range) * 100;
-      return `${x},${y}`;
-    }).join(' ');
-
-    return (
-      <svg className="w-20 h-8" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <polyline
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="3"
-          points={points}
-          className={colors.accent}
-        />
-        <defs>
-          <linearGradient id={`gradient-${color}`} x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="currentColor" stopOpacity="0.3" />
-            <stop offset="100%" stopColor="currentColor" stopOpacity="0.05" />
-          </linearGradient>
-        </defs>
-        <polyline
-          fill={`url(#gradient-${color})`}
-          stroke="none"
-          points={`0,100 ${points} 100,100`}
-          className={colors.accent}
-        />
-      </svg>
-    );
-  };
-
   return (
-    <div className={`group relative bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-xl border ${colors.border} hover:shadow-2xl ${colors.shadow} transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 overflow-hidden`}>
-      {/* Animated Background Gradient */}
-      <div className={`absolute inset-0 bg-gradient-to-br ${colors.light} opacity-50 group-hover:opacity-70 transition-opacity duration-500`}></div>
-      
-      {/* Floating Decorative Elements */}
-      <div className={`absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br ${colors.gradient} rounded-full opacity-10 group-hover:opacity-20 transition-opacity duration-500 animate-pulse`}></div>
-      <div className={`absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br ${colors.gradient} rounded-full opacity-5 group-hover:opacity-15 transition-opacity duration-500 animate-pulse delay-300`}></div>
+    <motion.div
+      whileHover={{ y: -10, scale: 1.02 }}
+      className={`glass-card p-8 rounded-3xl border border-white/10 relative overflow-hidden group shadow-2xl ${colors.glow}`}
+    >
+      <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${colors.gradient} opacity-[0.03] rounded-full -translate-y-12 translate-x-12 blur-2xl group-hover:opacity-[0.1] transition-all`} />
 
-      {/* Content */}
-      <div className="relative z-10">
-        {/* Header with Icon and Trend */}
-        <div className="flex items-start justify-between mb-6">
-          <div className={`p-4 bg-gradient-to-br ${colors.gradient} rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300 transform group-hover:scale-110`}>
-            <div className="text-white">
-              {icon}
-            </div>
+      <div className="relative z-10 space-y-6">
+        <div className="flex justify-between items-start">
+          <div className={`w-14 h-14 rounded-2xl bg-white/5 border ${colors.border} flex items-center justify-center shadow-lg transform group-hover:rotate-12 transition-transform`}>
+            {React.cloneElement(icon, { className: `w-7 h-7 ${colors.accent}` })}
           </div>
-          
-          {trend && (
-            <div className="flex flex-col items-end">
-              <div className="flex items-center gap-1 px-3 py-1 bg-green-100/80 backdrop-blur-sm rounded-lg shadow-sm">
-                <ArrowUpRight className="w-4 h-4 text-green-600" />
-                <span className="text-sm font-bold text-green-700">{trend}</span>
-              </div>
-              <span className="text-xs text-gray-500 mt-1">{subtitle}</span>
+          <div className="text-right">
+            <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-green-500/10 text-green-400 border border-green-500/20 text-[10px] font-black">
+              <ArrowUpRight size={12} />
+              {trend}
             </div>
-          )}
-        </div>
-        
-        {/* Title and Value */}
-        <div className="mb-4">
-          <h3 className="text-sm font-semibold text-gray-600 mb-2 uppercase tracking-wide">{title}</h3>
-          <p className="text-4xl font-bold text-gray-900 mb-1">{value}</p>
-        </div>
-
-        {/* Sparkline Chart */}
-        <div className="flex items-center justify-between">
-          <div className="flex-1">
-            <SparklineChart data={sparkline} />
-          </div>
-          <div className="ml-4">
-            <div className={`p-2 ${colors.light} bg-gradient-to-br rounded-lg`}>
-              <Zap className={`w-4 h-4 ${colors.accent}`} />
-            </div>
+            <p className="text-[10px] text-gray-500 mt-1 font-bold uppercase tracking-wider">{subtitle}</p>
           </div>
         </div>
 
-        {/* Progress Indicator */}
-        <div className="mt-6">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-xs text-gray-500">Performance</span>
-            <span className="text-xs font-semibold text-gray-700">85%</span>
-          </div>
-          <div className="w-full bg-gray-200/50 rounded-full h-2 overflow-hidden">
-            <div 
-              className={`h-2 bg-gradient-to-r ${colors.gradient} rounded-full transition-all duration-1000 ease-out transform origin-left`} 
-              style={{width: '85%'}}
-            ></div>
-          </div>
+        <div>
+          <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] mb-1">{title}</h3>
+          <p className="text-4xl font-black tracking-tighter text-white">{value}</p>
+        </div>
+
+        <div className="flex items-end justify-between gap-4 h-12">
+          <svg className="w-full h-full opacity-50 transition-opacity group-hover:opacity-100" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path
+              d="M0,100 C10,95 20,80 30,85 C40,90 50,70 60,75 C70,80 80,60 90,65 L100,100"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              className={colors.accent}
+            />
+          </svg>
+          <Zap className={`w-5 h-5 ${colors.accent} animate-pulse`} />
         </div>
       </div>
-
-      {/* Hover Glow Effect */}
-      <div className={`absolute inset-0 bg-gradient-to-br ${colors.gradient} opacity-0 group-hover:opacity-5 rounded-3xl transition-opacity duration-500`}></div>
-    </div>
+    </motion.div>
   );
 };

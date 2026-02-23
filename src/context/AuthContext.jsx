@@ -13,8 +13,8 @@ const AuthProvider = ({ children }) => {
     const validateSession = async () => {
       try {
         const res = await authMe();
-        setUser(res.data);
-        
+        setUser(res.data.data);
+
       } catch (err) {
         console.warn("Session invalid or expired", err);
         setUser(null);
@@ -28,9 +28,24 @@ const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      await loginApi(credentials);
-      const res = await authMe();
-      setUser(res.data);
+      const res = await loginApi(credentials);
+      console.log("Login Success:", res.data);
+
+      // Use user data from login response as initial state
+      if (res.data?.data?.user) {
+        setUser(res.data.data.user);
+      }
+
+      try {
+        // Try to refresh/get full profile
+        const profileRes = await authMe();
+        if (profileRes.data?.data) {
+          setUser(profileRes.data.data);
+        }
+      } catch (profileErr) {
+        console.warn("Secondary profile fetch failed after login, using login data:", profileErr);
+      }
+
       return { success: true };
     } catch (err) {
       console.error("Login failed:", err);
@@ -40,11 +55,11 @@ const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await logoutApi(); 
+      await logoutApi();
     } catch (err) {
       console.error("Logout error:", err);
     } finally {
-      setUser(null); 
+      setUser(null);
       window.location.href = "/signin"; // Optionally redirect
     }
   };

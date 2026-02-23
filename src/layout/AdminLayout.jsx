@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
-// import { ToastContainer } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
-
 import { Header, Sidebar, RouterCumb, ProgressBar, Footer } from "../components";
 import { useWindowContext } from "../context/windowContext";
+import { motion, AnimatePresence } from "framer-motion";
 
 const AdminLayout = () => {
   const [openSidebar, setOpenSidebar] = useState(true);
@@ -14,57 +12,79 @@ const AdminLayout = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      setOpenSidebar(window.innerWidth >= 1024); // lg breakpoint
+      setOpenSidebar(window.innerWidth >= 1024);
     };
 
-    handleResize(); // Initial check
+    handleResize();
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
-    <div className="flex w-full min-h-screen bg-gray-50">
-      {/* <ToastContainer position="top-center" autoClose={3000} hideProgressBar={false} newestOnTop closeButton={true} /> */}
+    <div className="flex w-full min-h-screen bg-obsidian text-white relative overflow-hidden">
+      {/* Dynamic Background Elements */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] animate-pulse delay-700" />
+      </div>
 
       {/* Sidebar */}
       <Sidebar
         className={`
-    lg:fixed absolute left-0 z-30 w-64 bg-white 
-    top-[10vh]
-    transition-transform duration-300 ease-in-out 
-    ${openSidebar ? "translate-x-0" : "-translate-x-full"}
-  `}
+          lg:fixed absolute left-0 z-40 w-72 h-screen
+          transition-all duration-500 ease-in-out border-r border-white/5
+          ${openSidebar ? "translate-x-0" : "-translate-x-full"}
+          glass
+        `}
         toggleSidebar={toggleSidebar}
       />
 
-
-
       {/* Main content area */}
       <div
-        className={`flex flex-col flex-1 transition-all duration-300 ease-in-out ${openSidebar ? "lg:ml-64" : "ml-0"
+        className={`flex flex-col flex-1 transition-all duration-500 ease-in-out z-10 ${openSidebar ? "lg:ml-72" : "ml-0"
           }`}
       >
         {/* Header */}
         <Header toggleSidebar={toggleSidebar} openSidebar={openSidebar} />
 
-        {/* Breadcrumbs & progress */}
-        <div className="mt-[10vh] px-4">
-          <ProgressBar progressWidth={progressWidth} />
-          <RouterCumb />
-        </div>
+        {/* Content Container */}
+        <div className="mt-20 px-4 sm:px-6 lg:px-8 flex-grow flex flex-col">
+          <div className="mb-6">
+            <ProgressBar progressWidth={progressWidth} />
+            <div className="mt-4">
+              <RouterCumb />
+            </div>
+          </div>
 
-        {/* Main scrollable content */}
-        <main
-          ref={divRef || null}
-          className="flex-grow overflow-y-auto p-4 bg-orange-100/30"
-        >
-          <Outlet />
-        </main>
+          <main
+            ref={divRef || null}
+            className="flex-grow rounded-2xl glass-card p-6 mb-8 overflow-y-auto"
+          >
+            <AnimatePresence mode="wait">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Outlet />
+              </motion.div>
+            </AnimatePresence>
+          </main>
+        </div>
 
         {/* Footer */}
         <Footer />
       </div>
+
+      {/* Mobile Overlay */}
+      {openSidebar && window.innerWidth < 1024 && (
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 lg:hidden"
+          onClick={toggleSidebar}
+        />
+      )}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import Axios from '../utils/Axios';
 
 
-export const login = (data) => Axios.post('/auth/signIn', data);
+export const login = (data) => Axios.post('/auth/login', data);
 
 // ========== AUTH ==========
 
@@ -25,13 +25,13 @@ export const registerViaPhone = async (phoneData) => {
 
 // Sign In
 export const signIn = async (credentials) => {
-  const res = await Axios.post('/auth/signIn', credentials);
+  const res = await Axios.post('/auth/login', credentials);
   return res.data;
 };
 
 // Logout
 export const logout = async () => {
-  const res = await Axios.post('/auth/user/logout');
+  const res = await Axios.post('/auth/logout');
   return res.data;
 };
 
@@ -55,8 +55,8 @@ export const verifyOtp = async (otpData) => {
 
 // Get Logged-in User Profile
 export const getUserProfile = async () => {
-  const res = await Axios.get('/auth/user/profile');
-  return res.data.user;
+  const res = await Axios.get('/auth/profile');
+  return res.data.data;
 };
 
 // Update Profile
@@ -80,8 +80,8 @@ export const uploadAvatar = async (file) => {
 // Authenticated User Info (from /me)
 export const authMe = async () => {
   try {
-    const res = await Axios.get('/auth/me'); // No need to pass withCredentials here
-    return res.data; // Assuming the response contains user data
+    const res = await Axios.get('/auth/profile');
+    return res.data.data; // Return only the user object
   } catch (err) {
     console.error("Error fetching user info:", err);
     if (err.response) {
