@@ -45,7 +45,8 @@ export default function AddProductForm() {
   const [loading, setLoading] = useState(false);
   const [subCategories, setSubCategories] = useState([]);
   const [variant, setVariant] = useState({
-    size: "",
+    storage: "",
+    ram: "",
     color: [],
     price: "",
     stockQty: "",
@@ -202,10 +203,10 @@ export default function AddProductForm() {
 
 
   const addVariant = () => {
-    const { size, color, price, stockQty, packaging } = variant;
+    const { storage, ram, color, price, stockQty, packaging } = variant;
 
-    if (!size.trim()) {
-      toast.error("Size is required.");
+    if (!storage.trim() || !ram.trim()) {
+      toast.error("Storage and RAM are required.");
       return;
     }
     if (color.length === 0) {
@@ -217,9 +218,10 @@ export default function AddProductForm() {
       return;
     }
 
-    // Check for duplicate variant (same size + same colors)
+    // Check for duplicate variant (same storage + ram + same colors)
     const alreadyExists = formData.variants.some(v =>
-      v.size === size &&
+      v.storage === storage &&
+      v.ram === ram &&
       v.color.length === color.length &&
       v.color.every(c => color.includes(c)) &&
       color.every(c => v.color.includes(c))
@@ -235,22 +237,24 @@ export default function AddProductForm() {
       variants: [
         ...prev.variants,
         {
-          size: size.trim(),
+          storage: storage.trim(),
+          ram: ram.trim(),
           color: [...color], // copy array
           price: parseFloat(price),
           stockQty: parseInt(stockQty) || 0,
-          packaging: packaging || "Bottle",
+          packaging: packaging || "Box",
         },
       ],
     }));
 
     // Reset variant form
     setVariant({
-      size: "",
+      storage: "",
+      ram: "",
       color: [],
       price: "",
       stockQty: "",
-      packaging: "Bottle",
+      packaging: "Box",
     });
     setCurrentColor("");
 
@@ -325,7 +329,8 @@ export default function AddProductForm() {
 
     // Append variants with indexed keys (exact match to backend)
     formData.variants.forEach((variant, index) => {
-      fd.append(`variants[${index}][size]`, variant.size);
+      fd.append(`variants[${index}][storage]`, variant.storage);
+      fd.append(`variants[${index}][ram]`, variant.ram);
       variant.color.forEach((color) => {
         fd.append(`variants[${index}][color][]`, color);
       });
@@ -533,7 +538,7 @@ export default function AddProductForm() {
             placeholder="e.g. 10"
           />
 
- {/* {console.log("dcnt input ",formData.discount)} */}
+          {/* {console.log("dcnt input ",formData.discount)} */}
 
           {/* Additional Info */}
           <div className="border border-gray-200 rounded-xl p-6">
@@ -644,15 +649,26 @@ export default function AddProductForm() {
             {/* Variant Input Card */}
             <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl p-6 border border-orange-200">
 
-              {/* Size + Price + Stock Row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              {/* Storage + RAM + Price + Stock Row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Size / Volume *</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Storage *</label>
                   <input
                     type="text"
-                    placeholder="e.g. 100ml, 50g, Large"
-                    value={variant.size}
-                    onChange={(e) => setVariant(prev => ({ ...prev, size: e.target.value }))}
+                    placeholder="e.g. 128GB, 256GB"
+                    value={variant.storage}
+                    onChange={(e) => setVariant(prev => ({ ...prev, storage: e.target.value }))}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">RAM *</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 6GB, 8GB"
+                    value={variant.ram}
+                    onChange={(e) => setVariant(prev => ({ ...prev, ram: e.target.value }))}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition"
                   />
                 </div>
@@ -683,10 +699,10 @@ export default function AddProductForm() {
                   <button
                     type="button"
                     onClick={addVariant}
-                    disabled={!variant.size || variant.color.length === 0 || !variant.price}
-                    className={`w-full py-3 rounded-xl font-bold text-white transition-all transform hover:scale-105 shadow-lg ${!variant.size || variant.color.length === 0 || !variant.price
-                        ? "bg-gray-300 cursor-not-allowed"
-                        : "bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600"
+                    disabled={!variant.storage || !variant.ram || variant.color.length === 0 || !variant.price}
+                    className={`w-full py-3 rounded-xl font-bold text-white transition-all transform hover:scale-105 shadow-lg ${!variant.storage || !variant.ram || variant.color.length === 0 || !variant.price
+                      ? "bg-gray-300 cursor-not-allowed"
+                      : "bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600"
                       }`}
                   >
                     Add Variant
@@ -766,7 +782,8 @@ export default function AddProductForm() {
                     >
                       <div className="flex-1">
                         <div className="flex flex-wrap items-center gap-4 text-lg font-bold text-gray-800">
-                          <span className="bg-white px-4 py-2 rounded-lg shadow">{v.size}</span>
+                          <span className="bg-white px-4 py-2 rounded-lg shadow">{v.storage} Storage</span>
+                          <span className="bg-white px-4 py-2 rounded-lg shadow">{v.ram} RAM</span>
                           <span>₹{v.price}</span>
                           <span className="text-gray-600 font-normal">• Stock: {v.stockQty || 0}</span>
                         </div>

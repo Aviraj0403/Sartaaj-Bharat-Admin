@@ -177,7 +177,12 @@ const ManageCategoryForm = () => {
             <label className="block text-sm font-medium text-gray-700">Current Images</label>
             <div className="flex gap-2 mt-2">
               {existingImages.map((url, i) => (
-                <img key={i} src={url} alt={`img ${i + 1}`} className="w-20 h-20 object-cover rounded border" />
+                <div key={i} className="relative group">
+                  <img src={url} alt={`img ${i + 1}`} className="w-20 h-20 object-cover rounded border" />
+                  <div className="absolute bottom-0 bg-black/60 text-white text-[10px] w-full text-center py-0.5">
+                    {i === 0 ? 'Desktop' : 'Mobile'}
+                  </div>
+                </div>
               ))}
             </div>
           </div>

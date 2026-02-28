@@ -125,13 +125,12 @@ const EditCategoryPage = () => {
     formData.append('type', type);
     if (type === 'Sub' && parentCategory) formData.append('parentCategory', parentCategory);
 
-    // Append images if selected
-    if (desktopImage) formData.append('desktopImage', desktopImage);
-    if (mobileImage) formData.append('mobileImage', mobileImage);
+    // Append images
+    if (desktopImage) formData.append('images', desktopImage);
+    else if (existingImages.desktop && !removeDesktopImage) formData.append('existingImages', existingImages.desktop);
 
-    // Flags for removing images
-    if (removeDesktopImage && existingImages.desktop) formData.append('removeDesktopImage', true);
-    if (removeMobileImage && existingImages.mobile) formData.append('removeMobileImage', true);
+    if (mobileImage) formData.append('images', mobileImage);
+    else if (existingImages.mobile && !removeMobileImage) formData.append('existingImages', existingImages.mobile);
 
     try {
       setLoading(true);
@@ -139,7 +138,7 @@ const EditCategoryPage = () => {
       setLoading(false);
       if (res.success) {
         toast.success('Category updated!');
-        navigate(`/admin/viewCategory/${categoryId}`);
+        navigate(`/admin/categories`);
       } else {
         toast.error(res.message || 'Update failed');
       }

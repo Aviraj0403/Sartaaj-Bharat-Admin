@@ -31,11 +31,12 @@ export default function EditProductForm() {
 
   // Temp variant state (for adding new)
   const [variant, setVariant] = useState({
-    size: "",
+    storage: "",
+    ram: "",
     color: [],
     price: "",
     stockQty: "",
-    packaging: "Bottle",
+    packaging: "Box",
   });
   const [currentColor, setCurrentColor] = useState("");
 
@@ -75,12 +76,13 @@ export default function EditProductForm() {
           },
           variants: Array.isArray(p.variants)
             ? p.variants.map(v => ({
-                size: v.size || "",
-                color: Array.isArray(v.color) ? v.color : [v.color].filter(Boolean),
-                price: v.price?.toString() || "",
-                stockQty: v.stockQty?.toString() || "0",
-                packaging: v.packaging || "Bottle",
-              }))
+              storage: v.storage || "",
+              ram: v.ram || "",
+              color: Array.isArray(v.color) ? v.color : [v.color].filter(Boolean),
+              price: v.price?.toString() || "",
+              stockQty: v.stock?.toString() || v.stockQty?.toString() || "0",
+              packaging: v.packaging || "Box",
+            }))
             : [],
         };
 
@@ -156,36 +158,38 @@ export default function EditProductForm() {
   };
 
   const addVariant = () => {
-    const { size, color, price, stockQty, packaging } = variant;
+    const { storage, ram, color, price, stockQty, packaging } = variant;
 
-    if (!size.trim()) return toast.error("Size is required.");
+    if (!storage.trim() || !ram.trim()) return toast.error("Storage and RAM are required.");
     if (color.length === 0) return toast.error("At least one color is required.");
     if (!price || isNaN(parseFloat(price))) return toast.error("Valid price is required.");
 
     const alreadyExists = formData.variants.some(v =>
-      v.size === size.trim() &&
+      v.storage === storage.trim() &&
+      v.ram === ram.trim() &&
       v.color.length === color.length &&
       v.color.every(c => color.includes(c)) &&
       color.every(c => v.color.includes(c))
     );
 
-    if (alreadyExists) return toast.error("This variant (size + colors) already exists.");
+    if (alreadyExists) return toast.error("This variant (storage + ram + colors) already exists.");
 
     setFormData(prev => ({
       ...prev,
       variants: [
         ...prev.variants,
         {
-          size: size.trim(),
+          storage: storage.trim(),
+          ram: ram.trim(),
           color: [...color],
           price: parseFloat(price),
           stockQty: parseInt(stockQty) || 0,
-          packaging: packaging || "Bottle",
+          packaging: packaging || "Box",
         },
       ],
     }));
 
-    setVariant({ size: "", color: [], price: "", stockQty: "", packaging: "Bottle" });
+    setVariant({ storage: "", ram: "", color: [], price: "", stockQty: "", packaging: "Box" });
     setCurrentColor("");
     toast.success("Variant added!");
   };
@@ -251,7 +255,8 @@ export default function EditProductForm() {
 
     // Variants
     formData.variants.forEach((v, i) => {
-      fd.append(`variants[${i}][size]`, v.size);
+      fd.append(`variants[${i}][storage]`, v.storage);
+      fd.append(`variants[${i}][ram]`, v.ram);
       v.color.forEach(col => fd.append(`variants[${i}][color][]`, col));
       fd.append(`variants[${i}][price]`, v.price);
       fd.append(`variants[${i}][stockQty]`, v.stockQty);
@@ -260,9 +265,11 @@ export default function EditProductForm() {
 
     // Images
     newImages.forEach(file => fd.append("pimages", file));
-    if (removedImages.length > 0) {
-      fd.append("removedImages", JSON.stringify(removedImages));
-    }
+    existingImages.forEach(img => {
+      if (!removedImages.includes(img)) {
+        fd.append("existingImages", img);
+      }
+    });
 
     try {
       const res = await updateProduct(productId, fd);
@@ -288,10 +295,10 @@ export default function EditProductForm() {
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Edit Product</h1>
 
         {/* Image Upload Section */}
-                {/* Image Upload Section */}
+        {/* Image Upload Section */}
         <div className="mb-8">
           <div className="bg-orange-100 border-2 border-dashed border-orange-400 rounded-xl p-6 text-center">
-            
+
             {/* Calculate total current images */}
             {(() => {
               const totalImages = existingImages.filter(img => !removedImages.includes(img)).length + newPreviews.length;
@@ -405,7 +412,7 @@ export default function EditProductForm() {
           </div>
 
           <InputField label="Tags (comma separated)" name="tags" value={formData.tags} onChange={handleChange} />
-          <InputField label="Discount (%)" name="discount" type="number" min="0" max="100"  value={formData.discount} onChange={handleChange} />
+          <InputField label="Discount (%)" name="discount" type="number" min="0" max="100" value={formData.discount} onChange={handleChange} />
           {/* {console.log("dcnt input ",formData.discount)} */}
           {/* Additional Info */}
           <div className="border border-gray-200 rounded-xl p-6">
@@ -423,14 +430,24 @@ export default function EditProductForm() {
             </h2>
 
             <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl p-6 border border-orange-200">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Size / Volume *</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Storage *</label>
                   <input
                     type="text"
-                    placeholder="e.g. 100ml, Large"
-                    value={variant.size}
-                    onChange={e => setVariant(prev => ({ ...prev, size: e.target.value }))}
+                    placeholder="e.g. 128GB, 256GB"
+                    value={variant.storage}
+                    onChange={e => setVariant(prev => ({ ...prev, storage: e.target.value }))}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-orange-200 focus:border-orange-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">RAM *</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 8GB, 12GB"
+                    value={variant.ram}
+                    onChange={e => setVariant(prev => ({ ...prev, ram: e.target.value }))}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-orange-200 focus:border-orange-500"
                   />
                 </div>
@@ -458,11 +475,11 @@ export default function EditProductForm() {
                   <button
                     type="button"
                     onClick={addVariant}
-                    disabled={!variant.size || variant.color.length === 0 || !variant.price}
-                    className={`w-full py-3 rounded-xl font-bold text-white transition-all ${!variant.size || variant.color.length === 0 || !variant.price
+                    disabled={!variant.storage || !variant.ram || variant.color.length === 0 || !variant.price}
+                    className={`w-full py-3 rounded-xl font-bold text-white transition-all ${!variant.storage || !variant.ram || variant.color.length === 0 || !variant.price
                       ? "bg-gray-300 cursor-not-allowed"
                       : "bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 shadow-lg"
-                    }`}
+                      }`}
                   >
                     Add Variant
                   </button>
@@ -512,7 +529,8 @@ export default function EditProductForm() {
                     <div key={idx} className="bg-gradient-to-r from-orange-50 to-pink-50 border border-orange-200 rounded-2xl p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 hover:shadow-xl transition-shadow">
                       <div className="flex-1">
                         <div className="flex flex-wrap items-center gap-4 text-lg font-bold text-gray-800">
-                          <span className="bg-white px-4 py-2 rounded-lg shadow">{v.size}</span>
+                          <span className="bg-white px-4 py-2 rounded-lg shadow">{v.storage} Storage</span>
+                          <span className="bg-white px-4 py-2 rounded-lg shadow">{v.ram} RAM</span>
                           <span>₹{v.price}</span>
                           <span className="text-gray-600 font-normal">• Stock: {v.stockQty || 0}</span>
                         </div>
