@@ -50,7 +50,6 @@ export default function AddProductForm() {
     color: [],
     price: "",
     stockQty: "",
-    packaging: "",
   });
   const [currentColor, setCurrentColor] = useState("");
   /* ------------------ FETCH CATEGORIES ------------------ */
@@ -242,7 +241,6 @@ export default function AddProductForm() {
           color: [...color], // copy array
           price: parseFloat(price),
           stockQty: parseInt(stockQty) || 0,
-          packaging: packaging || "Box",
         },
       ],
     }));
@@ -254,7 +252,6 @@ export default function AddProductForm() {
       color: [],
       price: "",
       stockQty: "",
-      packaging: "Box",
     });
     setCurrentColor("");
 
@@ -336,7 +333,6 @@ export default function AddProductForm() {
       });
       fd.append(`variants[${index}][price]`, variant.price);
       fd.append(`variants[${index}][stockQty]`, variant.stockQty);
-      fd.append(`variants[${index}][packaging]`, variant.packaging);
     });
 
     // Append images
