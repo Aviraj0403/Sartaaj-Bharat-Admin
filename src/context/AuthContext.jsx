@@ -13,7 +13,7 @@ const AuthProvider = ({ children }) => {
     const validateSession = async () => {
       try {
         const res = await authMe();
-        setUser(res.data.data);
+        setUser(res);
 
       } catch (err) {
         console.warn("Session invalid or expired", err);
@@ -39,8 +39,8 @@ const AuthProvider = ({ children }) => {
       try {
         // Try to refresh/get full profile
         const profileRes = await authMe();
-        if (profileRes.data?.data) {
-          setUser(profileRes.data.data);
+        if (profileRes) {
+          setUser(profileRes);
         }
       } catch (profileErr) {
         console.warn("Secondary profile fetch failed after login, using login data:", profileErr);
