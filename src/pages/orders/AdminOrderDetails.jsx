@@ -243,7 +243,7 @@ const handlePrint = () => {
       <body>
         <!-- HEADER -->
         <div class="header">
-          <img id="logo" src="https://gurmeetkaurstore.com/logo-cosmetic2.jpg" />
+          <img id="logo" src="https://gurmeetkaurstore.com/sb.png" />
           <div class="header-text">
             <h1>Gurmeet Kaur Store</h1>
             <p>Order Receipt / Tax Invoice</p>
