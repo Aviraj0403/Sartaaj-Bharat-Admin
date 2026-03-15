@@ -25,6 +25,17 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
+Axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('adminToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 Axios.interceptors.response.use(
   (res) => res,
   async (err) => {
@@ -56,13 +67,23 @@ Axios.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        await axios.post(
+        const refreshResponse = await axios.post(
           `${baseURL}/auth/refresh-token`,
           {},
           {
             withCredentials: true,
+            headers: localStorage.getItem('adminToken') 
+              ? { Authorization: `Bearer ${localStorage.getItem('adminToken')}` } 
+              : {}
           }
         );
+        
+        // If the refresh token also gave us a new access token in the body, update it
+        const newToken = refreshResponse.data?.token || refreshResponse.data?.data?.token || refreshResponse.data?.data?.accessToken;
+        if (newToken) {
+          localStorage.setItem('adminToken', newToken);
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        }
 
         processQueue(null);
         isRefreshing = false;
@@ -75,6 +96,7 @@ Axios.interceptors.response.use(
         console.error("❌ Refresh token failed. Redirecting to login.");
 
         localStorage.removeItem("user");
+        localStorage.removeItem("adminToken");
         sessionStorage.clear();
         
         // Only redirect if we are not already at the signin page

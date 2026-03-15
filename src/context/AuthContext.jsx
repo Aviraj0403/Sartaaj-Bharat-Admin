@@ -31,6 +31,11 @@ const AuthProvider = ({ children }) => {
       const res = await loginApi(credentials);
       console.log("Login Success:", res.data);
 
+      const token = res.data?.token || res.data?.data?.token || res.data?.data?.accessToken;
+      if (token) {
+        localStorage.setItem('adminToken', token);
+      }
+
       // Use user data from login response as initial state
       if (res.data?.data?.user) {
         setUser(res.data.data.user);
@@ -59,6 +64,7 @@ const AuthProvider = ({ children }) => {
     } catch (err) {
       console.error("Logout error:", err);
     } finally {
+      localStorage.removeItem("adminToken");
       setUser(null);
       window.location.href = "/signin"; // Optionally redirect
     }
